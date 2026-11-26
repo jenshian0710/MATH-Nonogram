@@ -24,6 +24,8 @@
       --primary-hover: #1d4ed8;
       --primary-light: #dbeafe;
       --accent: #f59e0b;
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
       --success: #10b981;
       --danger: #ef4444;
       --cell-filled: #1e293b;
@@ -210,6 +212,13 @@
     }
     .btn-accent:hover { background: #fde68a; border-color: #d97706; }
 
+    .btn-purple {
+      background: var(--purple-light);
+      border-color: #a78bfa;
+      color: #5b21b6;
+    }
+    .btn-purple:hover { background: #ddd6fe; border-color: var(--purple); }
+
     .btn-danger-outline {
       color: var(--danger);
       border-color: #fca5a5;
@@ -242,7 +251,6 @@
       border-color: var(--primary);
     }
 
-    /* 切換開關 (Toggle Switch) */
     .toggle-label {
       display: inline-flex;
       align-items: center;
@@ -321,7 +329,81 @@
     }
 
     /* ==========================================================================
-       5. 數織核心棋盤區 (Nonogram Board Container & Grid)
+       5. 多解收集專屬面板 (Multi-Solution Challenge Bar)
+       ========================================================================== */
+    .multi-sol-panel {
+      width: 100%;
+      background: linear-gradient(135deg, #f5f3ff, #eef2ff);
+      border: 1.5px solid #c4b5fd;
+      border-radius: var(--radius-lg);
+      padding: 12px 16px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+    .multi-sol-panel.active {
+      display: flex;
+    }
+    .multi-sol-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .multi-sol-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #5b21b6;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .multi-sol-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .sol-thumb-card {
+      background: #ffffff;
+      border: 2px solid #a78bfa;
+      border-radius: 10px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .sol-thumb-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+      border-color: var(--purple);
+    }
+    .sol-thumb-card span {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #5b21b6;
+    }
+    .sol-thumb-slot {
+      width: 66px;
+      height: 82px;
+      border: 2px dashed #c4b5fd;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #8b5cf6;
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    /* ==========================================================================
+       6. 數織核心棋盤區 (Nonogram Board Container & Grid)
        ========================================================================== */
     .board-wrapper {
       width: 100%;
@@ -352,16 +434,14 @@
       color: var(--text-secondary);
     }
 
-    /* 棋盤表格結構 */
     .nonogram-table {
       border-collapse: collapse;
       user-select: none;
-      touch-action: none; /* 防止觸控拖曳塗黑時畫面捲動 */
+      touch-action: none;
       background: var(--bg-surface);
       border: 2.5px solid var(--border-thick);
     }
 
-    /* 左上角空白資訊格 */
     .corner-cell {
       background: var(--bg-subtle);
       border-right: 2.5px solid var(--border-thick);
@@ -374,7 +454,6 @@
       font-weight: 600;
     }
 
-    /* 上方直欄數字提示 */
     .col-clue {
       background: var(--bg-clue);
       border-right: 1px solid var(--border-grid);
@@ -387,12 +466,8 @@
       max-width: var(--cell-size);
       transition: background-color 0.1s;
     }
-    .col-clue.thick-right {
-      border-right: 2.5px solid var(--border-thick);
-    }
-    .col-clue.highlight-axis {
-      background: #cbd5e1;
-    }
+    .col-clue.thick-right { border-right: 2.5px solid var(--border-thick); }
+    .col-clue.highlight-axis { background: #cbd5e1; }
 
     .col-clue-list {
       display: flex;
@@ -402,7 +477,6 @@
       gap: 2px;
     }
 
-    /* 左方橫列數字提示 */
     .row-clue {
       background: var(--bg-clue);
       border-right: 2.5px solid var(--border-thick);
@@ -414,12 +488,8 @@
       white-space: nowrap;
       transition: background-color 0.1s;
     }
-    .row-clue.thick-bottom {
-      border-bottom: 2.5px solid var(--border-thick);
-    }
-    .row-clue.highlight-axis {
-      background: #cbd5e1;
-    }
+    .row-clue.thick-bottom { border-bottom: 2.5px solid var(--border-thick); }
+    .row-clue.highlight-axis { background: #cbd5e1; }
 
     .row-clue-list {
       display: inline-flex;
@@ -428,9 +498,8 @@
       gap: 6px;
     }
 
-    /* 提示數字樣式與自動/手動劃掉效果 */
     .clue-num {
-      font-size: calc(var(--cell-size) * 0.44);
+      font-size: max(8px, calc(var(--cell-size) * 0.44));
       font-weight: 800;
       line-height: 1.1;
       color: var(--text-primary);
@@ -439,12 +508,8 @@
       border-radius: 3px;
       padding: 0 2px;
     }
-    .clue-num.clickable {
-      cursor: pointer;
-    }
-    .clue-num.clickable:hover {
-      background: rgba(15, 23, 42, 0.08);
-    }
+    .clue-num.clickable { cursor: pointer; }
+    .clue-num.clickable:hover { background: rgba(15, 23, 42, 0.08); }
     .clue-num.satisfied,
     .clue-num.manual-crossed {
       color: var(--text-muted);
@@ -453,7 +518,6 @@
       opacity: 0.65;
     }
 
-    /* 棋盤方格 */
     .grid-cell {
       width: var(--cell-size);
       height: var(--cell-size);
@@ -468,33 +532,16 @@
       transition: background-color 0.06s ease;
     }
 
-    .grid-cell.thick-right {
-      border-right: 2.5px solid var(--border-thick);
-    }
-    .grid-cell.thick-bottom {
-      border-bottom: 2.5px solid var(--border-thick);
-    }
-
-    /* 十字高亮導引 */
-    .grid-cell.highlight-axis {
-      background-color: #eff6ff;
-    }
-
-    /* 塗黑狀態 */
-    .grid-cell.filled {
-      background-color: var(--cell-filled);
-    }
-    .grid-cell.filled.highlight-axis {
-      background-color: #0f172a;
-    }
-
-    /* 過關彩色揭示狀態 */
+    .grid-cell.thick-right { border-right: 2.5px solid var(--border-thick); }
+    .grid-cell.thick-bottom { border-bottom: 2.5px solid var(--border-thick); }
+    .grid-cell.highlight-axis { background-color: #eff6ff; }
+    .grid-cell.filled { background-color: var(--cell-filled); }
+    .grid-cell.filled.highlight-axis { background-color: #0f172a; }
     .grid-cell.solved-color {
       border-color: rgba(0,0,0,0.08) !important;
       transition: background-color 0.5s ease;
     }
 
-    /* 標記叉號 (X) */
     .grid-cell.marked-x::before,
     .grid-cell.marked-x::after {
       content: "";
@@ -506,34 +553,24 @@
       background-color: var(--cell-x);
       border-radius: 2px;
     }
-    .grid-cell.marked-x::before {
-      transform: translate(-50%, -50%) rotate(45deg);
-    }
-    .grid-cell.marked-x::after {
-      transform: translate(-50%, -50%) rotate(-45deg);
-    }
+    .grid-cell.marked-x::before { transform: translate(-50%, -50%) rotate(45deg); }
+    .grid-cell.marked-x::after { transform: translate(-50%, -50%) rotate(-45deg); }
 
-    /* 錯誤提示標記 */
     .grid-cell.error-cell {
       box-shadow: inset 0 0 0 3px var(--danger);
       background-color: #fee2e2;
     }
-    .grid-cell.filled.error-cell {
-      background-color: #991b1b;
-    }
+    .grid-cell.filled.error-cell { background-color: #991b1b; }
 
-    /* 提示揭露動畫 */
     @keyframes pulseHint {
       0% { transform: scale(0.7); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.8); }
       70% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
       100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
     }
-    .hint-flash {
-      animation: pulseHint 0.6s ease-out;
-    }
+    .hint-flash { animation: pulseHint 0.6s ease-out; }
 
     /* ==========================================================================
-       6. 彈出視窗與通知訊息 (Modals & Toast)
+       7. 彈出視窗與通知訊息 (Modals & Toast)
        ========================================================================== */
     .modal-backdrop {
       position: fixed;
@@ -546,9 +583,7 @@
       z-index: 100;
       padding: 16px;
     }
-    .modal-backdrop.open {
-      display: flex;
-    }
+    .modal-backdrop.open { display: flex; }
 
     .modal-card {
       background: var(--bg-surface);
@@ -563,9 +598,7 @@
       animation: modalPop 0.22s ease-out;
     }
 
-    .modal-card.modal-wide {
-      max-width: 660px;
-    }
+    .modal-card.modal-wide { max-width: 680px; }
 
     @keyframes modalPop {
       from { opacity: 0; transform: scale(0.94) translateY(8px); }
@@ -608,7 +641,7 @@
       margin-top: 8px;
     }
 
-    /* 圖片轉數織專屬介面 */
+    /* 圖片轉數織與唯一解對照通用預覽格 */
     .upload-dropzone {
       border: 2px dashed #94a3b8;
       border-radius: 12px;
@@ -629,9 +662,8 @@
       flex-direction: column;
       gap: 14px;
     }
-    .img-convert-workspace.active {
-      display: flex;
-    }
+    .img-convert-workspace.active { display: flex; }
+
     .img-preview-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -648,7 +680,7 @@
       gap: 8px;
     }
     .img-preview-box span {
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 700;
       color: var(--text-secondary);
     }
@@ -677,10 +709,7 @@
       gap: 10px;
       font-size: 0.86rem;
     }
-    .img-control-row label {
-      font-weight: 700;
-      color: var(--text-primary);
-    }
+    .img-control-row label { font-weight: 700; color: var(--text-primary); }
     .img-control-row input[type="range"] {
       flex: 1;
       min-width: 140px;
@@ -688,7 +717,312 @@
       cursor: pointer;
     }
 
-    /* 浮動提示訊息 (Toast) */
+
+
+
+    /* 名詞協助繪圖候選圖庫樣式 */
+    .kw-search-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .kw-search-bar input[type="text"] {
+      flex: 1;
+      min-width: 180px;
+      font-size: 0.98rem;
+      font-weight: 700;
+      padding: 8px 12px;
+    }
+    .kw-status-line {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .kw-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+      gap: 8px;
+      max-height: 175px;
+      overflow-y: auto;
+      padding: 8px;
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      background: var(--bg-subtle);
+      margin-bottom: 12px;
+    }
+    .kw-item {
+      background: #ffffff;
+      border: 2px solid var(--border-light);
+      border-radius: 8px;
+      padding: 6px 4px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .kw-item:hover {
+      border-color: var(--primary);
+      background: #eff6ff;
+    }
+    .kw-item.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      box-shadow: var(--shadow-sm);
+    }
+    .kw-item img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+    .kw-item span {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .kw-badge-local {
+      font-size: 0.64rem;
+      background: #dcfce7;
+      color: #166534;
+      padding: 1px 5px;
+      border-radius: 999px;
+    }
+    .kw-badge-web {
+      font-size: 0.64rem;
+      background: #dbeafe;
+      color: #1e40af;
+      padding: 1px 5px;
+      border-radius: 999px;
+    }
+
+    /* 隨機塗黑率微調控制與文字轉數織樣式 */
+    .random-gen-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 9px;
+      padding: 2px 4px 2px 8px;
+    }
+    .random-gen-group label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .random-gen-group select {
+      padding: 4px 6px;
+      font-size: 0.82rem;
+      border-radius: 6px;
+    }
+    .random-gen-group input[type="number"] {
+      width: 54px;
+      padding: 4px 6px;
+      font-size: 0.82rem;
+      border-radius: 6px;
+    }
+    .random-gen-group .btn {
+      padding: 5px 10px;
+      font-size: 0.84rem;
+    }
+
+    .text-input-hero {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .text-input-hero input[type="text"] {
+      flex: 1;
+      min-width: 180px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 9px 12px;
+    }
+    .symbol-chips {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .symbol-chip {
+      border: 1px solid var(--border-light);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border-radius: 6px;
+      padding: 3px 9px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .symbol-chip:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary-hover);
+    }
+
+    /* 排行榜與登錄成績樣式 */
+    .lb-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .lb-toolbar select {
+      flex: 1;
+      min-width: 200px;
+    }
+    .lb-table-wrap {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      background: var(--bg-surface);
+    }
+    .lb-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .lb-table th {
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      font-weight: 700;
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-light);
+      position: sticky;
+      top: 0;
+    }
+    .lb-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+    .lb-table tr:last-child td { border-bottom: none; }
+    .lb-table tr.lb-highlight-row td {
+      background: #eff6ff;
+      font-weight: 700;
+    }
+    .lb-empty {
+      text-align: center;
+      padding: 28px 14px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .lb-clear-panel {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .lb-clear-panel.open {
+      display: flex;
+    }
+    .lb-clear-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .lb-clear-row input[type="password"] {
+      flex: 1;
+      min-width: 150px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 1px solid #fca5a5;
+      background: #ffffff;
+      font-size: 0.88rem;
+    }
+    .victory-rank-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 12px;
+      margin: 12px 0 6px;
+      text-align: left;
+    }
+    .victory-rank-box label {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .victory-rank-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .victory-rank-row input {
+      flex: 1;
+      min-width: 160px;
+    }
+    .victory-rank-feedback {
+      margin-top: 8px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #059669;
+    }
+
+    /* 唯一解檢驗結果卡片 */
+    .unique-banner {
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .unique-banner.ok {
+      background: #ecfdf5;
+      border: 1px solid #6ee7b7;
+      color: #065f46;
+    }
+    .unique-banner.multi {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      color: #92400e;
+    }
+    .unique-banner.warn {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #991b1b;
+    }
+    .alt-sol-switcher {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
     #toast {
       position: fixed;
       bottom: 24px;
@@ -705,13 +1039,14 @@
       pointer-events: none;
       transition: all 0.25s ease;
       z-index: 200;
+      max-width: 92vw;
+      text-align: center;
     }
     #toast.show {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
 
-    /* 慶祝花瓣特效畫布 */
     #confetti-canvas {
       position: fixed;
       inset: 0;
@@ -720,7 +1055,7 @@
     }
 
     /* ==========================================================================
-       7. 頁尾 (Footer)
+       8. 頁尾與列印學習單樣式 (Footer & Print Styles)
        ========================================================================== */
     footer {
       background: var(--bg-surface);
@@ -732,24 +1067,17 @@
       font-weight: 600;
     }
 
-    /* ==========================================================================
-       8. 列印學習單專屬樣式 (Print Worksheet Styles)
-       ========================================================================== */
-    .print-only-header {
-      display: none;
-    }
+    .print-only-header { display: none; }
 
     @media print {
-      @page {
-        margin: 12mm;
-      }
+      @page { margin: 12mm; }
       body {
         background: #ffffff !important;
         color: #000000 !important;
         display: block !important;
         min-height: auto !important;
       }
-      header, .control-panel, .puzzle-header-info p, #toast, #confetti-canvas, .modal-backdrop {
+      header, .control-panel, .multi-sol-panel, .puzzle-header-info p, #toast, #confetti-canvas, .modal-backdrop {
         display: none !important;
       }
       main {
@@ -774,24 +1102,18 @@
         border-bottom: 2px solid #000;
         padding-bottom: 8px;
       }
-      .print-only-header h1 {
-        margin: 0 0 6px;
-        font-size: 16pt;
-      }
+      .print-only-header h1 { margin: 0 0 6px; font-size: 16pt; }
       .print-meta {
         display: flex;
         justify-content: space-between;
         font-size: 10.5pt;
       }
-      /* 列印時強制清空作答內容，僅保留空白方格與數字提示 */
       .grid-cell {
         background: #ffffff !important;
         box-shadow: none !important;
       }
       .grid-cell.marked-x::before,
-      .grid-cell.marked-x::after {
-        display: none !important;
-      }
+      .grid-cell.marked-x::after { display: none !important; }
       .clue-num {
         color: #000000 !important;
         text-decoration: none !important;
@@ -802,7 +1124,6 @@
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
-      /* 修正列印頁尾防重疊：改為靜態流式定位，不壓到棋盤 */
       footer {
         position: static !important;
         margin-top: 18px !important;
@@ -813,7 +1134,6 @@
       }
     }
 
-    /* 響應式微調 */
     @media (max-width: 640px) {
       header { padding: 8px 10px; }
       .brand-title { font-size: 1rem; }
@@ -826,7 +1146,6 @@
 </head>
 <body>
 
-  <!-- 過關慶祝彩色紙花畫布 -->
   <canvas id="confetti-canvas"></canvas>
 
   <!-- 頂部導覽列 -->
@@ -837,11 +1156,10 @@
       </div>
       <div>
         <div class="brand-title">數織 Nonogram 工坊</div>
-        <span class="brand-sub">邏輯推理・像素藝術創作</span>
+        <span class="brand-sub">邏輯推理・唯一解檢驗・像素創作</span>
       </div>
     </div>
 
-    <!-- 模式切換 -->
     <div class="mode-tabs" role="tablist">
       <button class="mode-tab active" id="tab-play" role="tab" aria-selected="true">
         🧩 挑戰解謎
@@ -851,11 +1169,10 @@
       </button>
     </div>
 
-    <!-- 視圖與系統快捷控制 -->
     <div class="header-actions">
       <div class="zoom-control" title="調整格子縮放大小">
         <span>🔍</span>
-        <input type="range" id="zoom-slider" min="50" max="180" value="100" />
+        <input type="range" id="zoom-slider" min="25" max="180" value="100" />
         <span id="zoom-val">100%</span>
       </div>
       <button class="btn" id="btn-sound" title="切換音效開關">🔊 音效開</button>
@@ -864,7 +1181,6 @@
     </div>
   </header>
 
-  <!-- 主工作區 -->
   <main>
     <!-- ======================================================================
          模式一：挑戰解謎控制面板 (Play Mode Panel)
@@ -874,27 +1190,26 @@
         <div class="panel-group">
           <label for="puzzle-select" style="font-weight:700; font-size:0.88rem;">選擇關卡：</label>
           <select id="puzzle-select" aria-label="選擇謎題關卡"></select>
-          <button class="btn" id="btn-restart" title="重新開始本題">↺ 重置</button>
+          <button class="btn" id="btn-restart" title="重新開始本題（清空所有進度）">↺ 重置</button>
           <button class="btn" id="btn-import-play" title="貼上題目分享碼載入關卡">📥 匯入代碼</button>
         </div>
 
         <div class="panel-group">
           <span class="stat-badge" id="timer-display">⏱️ 00:00</span>
           <span class="stat-badge" id="progress-display">進度：0%</span>
+          <button class="btn btn-accent" id="btn-open-leaderboard" title="查看單機各題解題時間排行榜">🏆 排行榜</button>
         </div>
       </div>
 
       <div class="panel-row">
-        <!-- 觸控與滑鼠畫筆切換工具列 -->
         <div class="panel-group" role="group" aria-label="作答工具">
           <button class="btn btn-tool active" data-tool="fill" id="tool-fill">⬛ 塗黑 (左鍵)</button>
           <button class="btn btn-tool" data-tool="mark" id="tool-mark">❌ 標記 X (右鍵)</button>
           <button class="btn btn-tool" data-tool="erase" id="tool-erase">🧹 橡皮擦</button>
         </div>
 
-        <!-- 解題輔助工具 -->
         <div class="panel-group">
-          <label class="toggle-label" title="自動標紅不符合預設解答的黑格或錯誤的叉號">
+          <label class="toggle-label" title="自動標紅不符合解答的黑格或錯誤的叉號">
             <input type="checkbox" id="chk-live-error" />
             即時檢查錯誤
           </label>
@@ -905,6 +1220,27 @@
       </div>
     </section>
 
+    <!-- 多解挑戰專屬收集面板（當本題有多組解時自動出現） -->
+    <section class="multi-sol-panel" id="multi-sol-panel">
+      <div class="multi-sol-header">
+        <div class="multi-sol-title">
+          <span>🔀 多解挑戰模式</span>
+          <span class="stat-badge" id="multi-sol-counter" style="background:#ffffff; color:#5b21b6; border-color:#c4b5fd;">
+            已收集解答：0 / 2 組
+          </span>
+        </div>
+        <div class="panel-group">
+          <span style="font-size:0.82rem; color:#6d28d9; font-weight:600;">
+            提示：找到一組解後，可直接微調歧義格或清空棋盤找出其餘解答！
+          </span>
+          <button class="btn btn-purple" id="btn-clear-board-keep-found" title="清空目前棋盤以便尋找下一組解（保留已收集紀錄）">
+            🧹 清空棋盤找下一解
+          </button>
+        </div>
+      </div>
+      <div class="multi-sol-cards" id="multi-sol-cards"></div>
+    </section>
+
     <!-- ======================================================================
          模式二：自訂設計控制面板 (Creator Mode Panel)
          ====================================================================== -->
@@ -912,25 +1248,27 @@
       <div class="panel-row">
         <div class="panel-group">
           <label style="font-weight:700; font-size:0.86rem;">題目名稱：</label>
-          <input type="text" id="create-title" value="我的創意像素畫" maxlength="20" style="width:150px;" />
+          <input type="text" id="create-title" value="題目自訂" placeholder="題目自訂（可自行命名）" maxlength="20" style="width:165px;" />
 
           <label style="font-weight:700; font-size:0.86rem;">寬(欄)：</label>
-          <input type="number" id="create-cols" min="5" max="25" value="10" style="width:62px;" />
+          <input type="number" id="create-cols" min="4" max="100" value="10" style="width:68px;" />
 
           <label style="font-weight:700; font-size:0.86rem;">高(列)：</label>
-          <input type="number" id="create-rows" min="5" max="25" value="10" style="width:62px;" />
+          <input type="number" id="create-rows" min="4" max="100" value="10" style="width:68px;" />
 
           <button class="btn btn-primary" id="btn-resize-grid">套用尺寸</button>
           <button class="btn btn-accent" id="btn-open-image-import" title="上傳圖片並自動轉換為數織題目">🖼️ 上傳圖片轉題目</button>
+          <button class="btn btn-accent" id="btn-open-text-import" title="輸入中英文文字或符號並預覽生成數織題目">🔤 文字／符號轉題目</button>
+          <button class="btn btn-purple" id="btn-open-keyword-import" title="輸入名詞（如愛心、天使、台灣）自動搜尋繪製題目圖檔">✨ 名詞協助繪圖</button>
         </div>
 
         <div class="panel-group">
           <span class="stat-badge" id="creator-status">狀態：可開始繪製</span>
+          <span class="stat-badge" id="creator-unique-badge" style="display:none;">尚未檢驗唯一解</span>
         </div>
       </div>
 
       <div class="panel-row">
-        <!-- 繪圖與對稱工具 -->
         <div class="panel-group">
           <button class="btn btn-tool active" data-ctool="draw" id="ctool-draw">🖌️ 畫筆塗黑</button>
           <button class="btn btn-tool" data-ctool="erase" id="ctool-erase">🧹 橡皮擦</button>
@@ -942,12 +1280,28 @@
             <input type="checkbox" id="chk-mirror-v" />
             ↕️ 垂直對稱
           </label>
-          <button class="btn" id="btn-random-gen" title="隨機產生可解圖案">🎲 隨機生成</button>
+          <div class="random-gen-group" title="設定隨機生成題目的塗黑率（或由系統隨機決定）">
+            <label for="random-density-select">塗黑率：</label>
+            <select id="random-density-select" aria-label="設定隨機生成塗黑率">
+              <option value="random" selected>隨機 (30%–70%)</option>
+              <option value="25">25%（稀疏）</option>
+              <option value="35">35%</option>
+              <option value="45">45%</option>
+              <option value="50">50%（標準）</option>
+              <option value="60">60%</option>
+              <option value="70">70%（濃密）</option>
+              <option value="custom">自訂 %</option>
+            </select>
+            <input type="number" id="random-density-custom" min="10" max="90" value="50" style="display:none;" aria-label="自訂塗黑率百分比" />
+            <button class="btn" id="btn-random-gen" title="依設定塗黑率隨機產生圖案">🎲 隨機生成</button>
+          </div>
           <button class="btn btn-danger-outline" id="btn-clear-canvas">🗑️ 清空畫布</button>
         </div>
 
-        <!-- 儲存、測試、分享與列印 -->
         <div class="panel-group">
+          <button class="btn btn-purple" id="btn-check-unique" title="檢驗此圖案轉為數織題目後是否只有唯一一組解答">
+            🔎 檢驗唯一解
+          </button>
           <button class="btn btn-success" id="btn-play-custom">▶️ 立即挑戰此設計</button>
           <button class="btn btn-primary" id="btn-save-custom">💾 儲存至我的題庫</button>
           <button class="btn" id="btn-share-code">🔗 匯出 / 匯入代碼</button>
@@ -960,7 +1314,6 @@
          數織棋盤顯示區 (Nonogram Board)
          ====================================================================== -->
     <section class="board-wrapper" id="board-wrapper">
-      <!-- 僅在列印時出現的學習單標頭 -->
       <div class="print-only-header">
         <h1 id="print-title">數織邏輯推理學習單</h1>
         <div class="print-meta">
@@ -978,12 +1331,10 @@
     </section>
   </main>
 
-  <!-- 頁尾標註 -->
   <footer>
-    設計者：林口國中李政憲老師 ｜ 數織 Nonogram 互動教學與創意設計平台
+    網頁設計：林口國中李政憲老師 ／ 課程指導：嘉義大學嚴志弘教授 ｜ 數織 Nonogram 互動教學與創意設計平台
   </footer>
 
-  <!-- 浮動提示訊息 -->
   <div id="toast" role="status" aria-live="polite"></div>
 
   <!-- ========================================================================
@@ -992,15 +1343,107 @@
   <div class="modal-backdrop" id="modal-victory">
     <div class="modal-card" style="text-align:center;">
       <div style="font-size:3rem; margin-bottom:6px;">🎉🏆🎨</div>
-      <h3 class="modal-title" style="justify-content:center; font-size:1.45rem; color:#059669;">
+      <h3 class="modal-title" id="victory-title" style="justify-content:center; font-size:1.45rem; color:#059669;">
         太棒了！成功解開謎題！
       </h3>
-      <div class="modal-body" id="victory-stats">
-        您已完成「5×5 經典愛心」，花費時間 00:25！
+      <div class="modal-body">
+        <div id="victory-stats"></div>
+        <div class="victory-rank-box" id="victory-rank-box">
+          <label for="victory-player-name">🏆 登錄本機排行榜（依解題時間排名）：</label>
+          <div class="victory-rank-row">
+            <input type="text" id="victory-player-name" maxlength="20" placeholder="輸入班級座號或姓名（例：80105 王小明）" />
+            <button class="btn btn-success" id="btn-submit-score">登錄成績</button>
+          </div>
+          <div class="victory-rank-feedback" id="victory-rank-feedback"></div>
+        </div>
       </div>
       <div class="modal-actions" style="justify-content:center;">
+        <button class="btn btn-accent" id="btn-victory-leaderboard">📊 查看本題排行榜</button>
         <button class="btn" id="btn-victory-close">欣賞成品</button>
         <button class="btn btn-primary" id="btn-victory-next">挑戰下一關 ➔</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       彈出視窗：單機各題排行榜 (Local Leaderboard Modal)
+       ======================================================================== -->
+  <div class="modal-backdrop" id="modal-leaderboard">
+    <div class="modal-card modal-wide">
+      <h3 class="modal-title">🏆 單機各題排行榜（依解題時間排名）</h3>
+      <div class="modal-body">
+        <div class="lb-toolbar">
+          <label for="lb-puzzle-select" style="font-weight:700; font-size:0.86rem;">檢視題目：</label>
+          <select id="lb-puzzle-select" aria-label="選擇要查看排行榜的題目"></select>
+        </div>
+
+        <div class="lb-table-wrap" id="lb-table-wrap">
+          <table class="lb-table">
+            <thead>
+              <tr>
+                <th style="width:68px;">名次</th>
+                <th>挑戰者</th>
+                <th style="width:100px;">解題時間</th>
+                <th style="width:145px;">完成時間</th>
+              </tr>
+            </thead>
+            <tbody id="lb-table-body"></tbody>
+          </table>
+        </div>
+
+        <div class="lb-clear-panel" id="lb-clear-panel">
+          <div style="font-size:0.84rem; font-weight:700; color:#991b1b;">
+            🔐 清空排行榜成績（需輸入管理密碼）
+          </div>
+          <div class="lb-clear-row">
+            <input type="password" id="lb-clear-password" placeholder="請輸入管理密碼" autocomplete="off" />
+            <button class="btn btn-danger-outline" id="btn-clear-lb-current">清空本題成績</button>
+            <button class="btn" id="btn-clear-lb-all" style="background:#dc2626; border-color:#dc2626; color:#ffffff;">清空全部排行榜</button>
+            <button class="btn" id="btn-cancel-lb-clear">取消</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions" style="justify-content:space-between;">
+        <button class="btn btn-danger-outline" id="btn-toggle-lb-clear">🗑️ 清空排行榜</button>
+        <button class="btn btn-primary" id="btn-lb-close">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       彈出視窗：唯一解檢驗結果 (Uniqueness Checker Modal)
+       ======================================================================== -->
+  <div class="modal-backdrop" id="modal-uniqueness">
+    <div class="modal-card modal-wide">
+      <h3 class="modal-title">🔎 數織唯一解邏輯檢驗報告</h3>
+      <div class="modal-body">
+        <div id="unique-result-banner" class="unique-banner ok"></div>
+        <div id="unique-detail-text" style="margin-bottom:12px;"></div>
+
+        <!-- 若為多重解，顯示並排對照與差異格（歧義格）高亮 -->
+        <div id="unique-compare-area" style="display:none;">
+          <div class="img-preview-grid">
+            <div class="img-preview-box">
+              <span>您的原始設計（橘框為歧義格）</span>
+              <canvas id="unique-canvas-orig" width="210" height="210"></canvas>
+            </div>
+            <div class="img-preview-box">
+              <span id="unique-alt-label">另一組符合相同提示的解答</span>
+              <canvas id="unique-canvas-alt" width="210" height="210"></canvas>
+            </div>
+          </div>
+          <div class="alt-sol-switcher" id="alt-sol-switcher">
+            <button class="btn" id="btn-alt-prev">◀ 上一組反例</button>
+            <span id="alt-sol-index-label">反例 1 / 1</span>
+            <button class="btn" id="btn-alt-next">下一組反例 ▶</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-purple" id="btn-unique-play-multi" style="display:none;">
+          🔀 直接以「多解挑戰」模式試玩
+        </button>
+        <button class="btn btn-primary" id="btn-unique-close">關閉並返回編輯</button>
       </div>
     </div>
   </div>
@@ -1035,7 +1478,7 @@
           <div style="font-size:2rem; margin-bottom:4px;">📤</div>
           <strong>點擊選擇圖片，或將圖片拖曳至此處</strong>
           <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">
-            支援 PNG、JPG、WebP、SVG 等格式（建議使用線條單純、對比明顯的圖案或剪影）
+            支援 PNG、JPG、WebP、GIF、BMP、SVG 格式，也可直接按 <strong>Ctrl+V</strong> 貼上剪貼簿圖片
           </div>
         </div>
 
@@ -1059,6 +1502,10 @@
                 <option value="15" selected>標準（最長邊 15 格）</option>
                 <option value="20">進階（最長邊 20 格）</option>
                 <option value="25">精細（最長邊 25 格）</option>
+                <option value="40">高精細（最長邊 40 格）</option>
+                <option value="60">細緻畫布（最長邊 60 格）</option>
+                <option value="80">超細緻（最長邊 80 格）</option>
+                <option value="100">極致（最長邊 100 格）</option>
               </select>
               <label class="toggle-label" style="padding:4px 8px;">
                 <input type="checkbox" id="img-lock-ratio" checked />
@@ -1068,9 +1515,15 @@
 
             <div class="img-control-row">
               <label for="img-cols">寬(欄)：</label>
-              <input type="number" id="img-cols" min="5" max="25" value="15" style="width:64px;" />
+              <input type="number" id="img-cols" min="4" max="100" value="15" style="width:68px;" />
               <label for="img-rows">高(列)：</label>
-              <input type="number" id="img-rows" min="5" max="25" value="15" style="width:64px;" />
+              <input type="number" id="img-rows" min="4" max="100" value="15" style="width:68px;" />
+              <label for="img-padding">留白：</label>
+              <select id="img-padding">
+                <option value="0" selected>0 格</option>
+                <option value="1">1 格</option>
+                <option value="2">2 格</option>
+              </select>
               <span class="stat-badge" id="img-fill-stat">塗黑率：0%</span>
             </div>
 
@@ -1095,6 +1548,199 @@
   </div>
 
   <!-- ========================================================================
+       彈出視窗：輸入文字／符號生成數織題目預覽 (Text/Symbol to Nonogram Modal)
+       ======================================================================== -->
+  <div class="modal-backdrop" id="modal-text-import">
+    <div class="modal-card modal-wide">
+      <h3 class="modal-title">🔤 輸入文字與符號生成數織題目</h3>
+      <div class="modal-body">
+        <div class="text-input-hero">
+          <input type="text" id="txt-source-input" value="★" maxlength="10" placeholder="輸入中英文文字、數字或符號（例：林、A、★、π、♥）" />
+          <label class="toggle-label" style="padding:6px 10px;">
+            <input type="checkbox" id="txt-bold" checked />
+            粗體
+          </label>
+        </div>
+
+        <div class="symbol-chips">
+          <span>常用範例：</span>
+          <button type="button" class="symbol-chip" data-sample="★">★</button>
+          <button type="button" class="symbol-chip" data-sample="♥">♥</button>
+          <button type="button" class="symbol-chip" data-sample="♪">♪</button>
+          <button type="button" class="symbol-chip" data-sample="π">π</button>
+          <button type="button" class="symbol-chip" data-sample="Σ">Σ</button>
+          <button type="button" class="symbol-chip" data-sample="∞">∞</button>
+          <button type="button" class="symbol-chip" data-sample="數">數</button>
+          <button type="button" class="symbol-chip" data-sample="林口">林口</button>
+          <button type="button" class="symbol-chip" data-sample="A">A</button>
+          <button type="button" class="symbol-chip" data-sample="HI">HI</button>
+        </div>
+
+        <div class="img-preview-grid" style="margin-bottom:12px;">
+          <div class="img-preview-box">
+            <span>文字／符號渲染原圖</span>
+            <canvas id="txt-orig-preview" width="210" height="210"></canvas>
+          </div>
+          <div class="img-preview-box">
+            <span id="txt-result-label">數織題目預覽（15×15）</span>
+            <canvas id="txt-pixel-preview" width="210" height="210"></canvas>
+          </div>
+        </div>
+
+        <div class="img-controls">
+          <div class="img-control-row">
+            <label for="txt-font-family">字體風格：</label>
+            <select id="txt-font-family">
+              <option value="sans" selected>黑體（無襯線，最清晰）</option>
+              <option value="serif">明體（襯線）</option>
+              <option value="kai">標楷體</option>
+              <option value="mono">等寬字體</option>
+            </select>
+            <label class="toggle-label" style="padding:4px 8px;">
+              <input type="checkbox" id="txt-auto-ratio" checked />
+              依字形比例自動調整版面
+            </label>
+          </div>
+
+          <div class="img-control-row">
+            <label for="txt-max-dim">基準格數：</label>
+            <select id="txt-max-dim">
+              <option value="10">10 格（單一符號／英數）</option>
+              <option value="15" selected>15 格（標準單字／符號）</option>
+              <option value="20">20 格（筆畫較多中文字）</option>
+              <option value="25">25 格（多字／精細字形）</option>
+              <option value="40">40 格（高精細中文字／詞組）</option>
+              <option value="60">60 格（細緻書法／多字詞）</option>
+              <option value="80">80 格（超細緻文字）</option>
+              <option value="100">100 格（極致解析度）</option>
+            </select>
+            <label for="txt-cols">寬(欄)：</label>
+            <input type="number" id="txt-cols" min="4" max="100" value="15" style="width:68px;" />
+            <label for="txt-rows">高(列)：</label>
+            <input type="number" id="txt-rows" min="4" max="100" value="15" style="width:68px;" />
+            <span class="stat-badge" id="txt-fill-stat">塗黑率：0%</span>
+          </div>
+
+          <div class="img-control-row">
+            <label for="txt-threshold">筆畫濃淡門檻：</label>
+            <input type="range" id="txt-threshold" min="20" max="235" value="155" />
+            <span id="txt-threshold-val" style="min-width:34px; font-weight:700;">155</span>
+            <label for="txt-padding">留白邊距：</label>
+            <select id="txt-padding">
+              <option value="0">0 格</option>
+              <option value="1" selected>1 格</option>
+              <option value="2">2 格</option>
+            </select>
+            <label class="toggle-label" style="padding:4px 8px;">
+              <input type="checkbox" id="txt-invert" />
+              黑白反相
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btn-txt-apply">✅ 套用至設計畫布</button>
+        <button class="btn" id="btn-txt-close">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       彈出視窗：輸入名詞協助繪圖 (Keyword Assisted Drawing Modal)
+       ======================================================================== -->
+  <div class="modal-backdrop" id="modal-keyword-import">
+    <div class="modal-card modal-wide">
+      <h3 class="modal-title">✨ 輸入名詞協助繪圖（智慧圖庫搜尋與轉換）</h3>
+      <div class="modal-body">
+        <div class="kw-search-bar">
+          <input type="text" id="kw-search-input" value="台灣" maxlength="24" placeholder="輸入中英文名詞（例：愛心、天使、台灣、蝴蝶、貓咪、火箭、101）" />
+          <button class="btn btn-primary" id="btn-kw-search">🔍 搜尋圖檔</button>
+        </div>
+
+        <div class="symbol-chips">
+          <span>熱門名詞：</span>
+          <button type="button" class="symbol-chip kw-quick-chip" data-kw="愛心">愛心</button>
+          <button type="button" class="symbol-chip kw-quick-chip" data-kw="天使">天使</button>
+          <button type="button" class="symbol-chip kw-quick-chip" data-kw="台灣">台灣</button>
+          <button type="button" class="symbol-chip kw-quick-chip" data-kw="貓咪">貓咪</button>
+          <button type="button" class="symbol-chip kw-quick-chip" data-kw="蝴蝶">蝴蝶</button>
+          <button type="button" class="symbol-chip kw-quick-chip" data-kw="恐龍">恐龍</button>
+          <button type="button" class="symbol-chip kw-quick-chip" data-kw="火箭">火箭</button>
+          <button type="button" class="symbol-chip kw-quick-chip" data-kw="城堡">城堡</button>
+          <button type="button" class="symbol-chip kw-quick-chip" data-kw="櫻花">櫻花</button>
+          <button type="button" class="symbol-chip kw-quick-chip" data-kw="聖誕樹">聖誕樹</button>
+          <button type="button" class="symbol-chip kw-quick-chip" data-kw="熊貓">熊貓</button>
+        </div>
+
+        <div class="kw-status-line" id="kw-status-line">
+          <span>請輸入名詞並點擊「搜尋圖檔」，或點選上方熱門名詞立即預覽。</span>
+        </div>
+
+        <div class="kw-gallery" id="kw-gallery"></div>
+
+        <div class="img-preview-grid" style="margin-bottom:12px;">
+          <div class="img-preview-box">
+            <span id="kw-orig-label">選取的參考圖檔</span>
+            <canvas id="kw-orig-preview" width="240" height="240"></canvas>
+          </div>
+          <div class="img-preview-box">
+            <span id="kw-result-label">數織題目預覽（25×25）</span>
+            <canvas id="kw-pixel-preview" width="240" height="240"></canvas>
+          </div>
+        </div>
+
+        <div class="img-controls">
+          <div class="img-control-row">
+            <label for="kw-max-dim">預設尺寸基準：</label>
+            <select id="kw-max-dim">
+              <option value="10">10 格（入門）</option>
+              <option value="15">15 格（標準）</option>
+              <option value="20">20 格（進階）</option>
+              <option value="25" selected>25 格（精細）</option>
+              <option value="40">40 格（高精細）</option>
+              <option value="60">60 格（細緻畫布）</option>
+              <option value="80">80 格（超細緻）</option>
+              <option value="100">100 格（極致）</option>
+            </select>
+            <label class="toggle-label" style="padding:4px 8px;">
+              <input type="checkbox" id="kw-lock-ratio" checked />
+              依圖檔比例自動調整
+            </label>
+          </div>
+
+          <div class="img-control-row">
+            <label for="kw-cols">寬(欄)：</label>
+            <input type="number" id="kw-cols" min="4" max="100" value="25" style="width:68px;" />
+            <label for="kw-rows">高(列)：</label>
+            <input type="number" id="kw-rows" min="4" max="100" value="25" style="width:68px;" />
+            <label for="kw-padding">留白：</label>
+            <select id="kw-padding">
+              <option value="0">0 格</option>
+              <option value="1" selected>1 格</option>
+              <option value="2">2 格</option>
+            </select>
+            <span class="stat-badge" id="kw-fill-stat">塗黑率：0%</span>
+          </div>
+
+          <div class="img-control-row">
+            <label for="kw-threshold">濃淡門檻值：</label>
+            <input type="range" id="kw-threshold" min="10" max="245" value="150" />
+            <span id="kw-threshold-val" style="min-width:34px; font-weight:700;">150</span>
+            <label class="toggle-label" style="padding:4px 8px;">
+              <input type="checkbox" id="kw-invert" />
+              黑白反相
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btn-kw-apply" disabled>✅ 套用至設計畫布</button>
+        <button class="btn" id="btn-kw-close">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
        彈出視窗：玩法與操作說明 (Help Modal)
        ======================================================================== -->
   <div class="modal-backdrop" id="modal-help">
@@ -1104,11 +1750,12 @@
         <p><strong>1. 核心規則：</strong><br>
         上方與左方的數字代表該直欄或橫列中「<strong>連續塗黑</strong>」的格子數量。若有多組數字，組與組之間<strong>至少需間隔 1 個空白格</strong>，且順序由左至右、由上至下。</p>
         <p><strong>2. 操作方式：</strong><br>
-        • <strong>電腦滑鼠：</strong>左鍵點擊或拖曳塗黑；右鍵點擊或拖曳標記「❌（確定空白）」。<br>
-        • <strong>平板 / 手機：</strong>使用上方工具列切換「⬛ 塗黑」、「❌ 標記 X」或「🧹 橡皮擦」，即可直接手指滑動連續繪製。<br>
-        • <strong>自動與手動劃線：</strong>當某組連續黑格已符合提示數字（或該行／列完全吻合提示）時會自動變灰並劃線；您也可以直接<strong>點擊提示數字</strong>手動切換劃掉標記。</p>
-        <p><strong>3. 自訂設計、圖片轉題與列印：</strong><br>
-        切換至「🎨 自訂設計」可自由設定 5×5 至 25×25 尺寸、使用對稱畫筆或<strong>上傳圖片自動轉成數織題目</strong>，並匯出分享碼或一鍵列印紙本學習單！</p>
+        • <strong>電腦滑鼠：</strong>左鍵塗黑；右鍵標記「❌（確定空白）」。<br>
+        • <strong>平板 / 手機：</strong>切換上方「⬛ 塗黑」、「❌ 標記 X」或「🧹 橡皮擦」即可直接滑動繪製。<br>
+        • <strong>自動與手動劃線：</strong>當連續黑格符合提示時會自動劃線，也可直接<strong>點擊提示數字</strong>手動切換劃掉。</p>
+        <p><strong>3. 唯一解檢驗與「多解挑戰」：</strong><br>
+        • 在「<strong>🎨 自訂設計</strong>」中點擊「<strong>🔎 檢驗唯一解</strong>」，系統會透過邏輯求解器檢查您的圖案轉為謎題後是否只有唯一一組解；若存在多重解，還會用橘框標示出「歧義格」並展示反例圖案。<br>
+        • 在「<strong>🧩 挑戰解謎</strong>」選單中選擇「<strong>🔀 多解挑戰（找出所有解）</strong>」，即可練習找出同一組數字提示對應的<strong>全部解答</strong>！</p>
       </div>
       <div class="modal-actions">
         <button class="btn btn-primary" id="btn-help-close">我瞭解了！</button>
@@ -1118,7 +1765,7 @@
 
   <script>
     /* ==========================================================================
-       1. 內建精選題庫資料 (Built-in Curated Puzzles)
+       1. 內建精選題庫資料（含唯一解關卡 + 數學驗證之多解挑戰關卡）
        ========================================================================== */
     const BUILTIN_PUZZLES = [
       {
@@ -1258,6 +1905,71 @@
           [0,0,0,0,0,1,0,1,0,1,0,0,0,0,0]
         ],
         colorMap: { "1": "#dc2626" }
+      },
+      /* ---- 多解挑戰關卡（經求解器精確驗證解的總數） ---- */
+      {
+        id: "multi_diag_4",
+        category: "多解挑戰（找出所有解）",
+        title: "4×4 雙重對角（共 2 組解）",
+        description: "經典 2×2 對角交換結構：同一組提示數字可產生 2 種不同的圖案！",
+        rows: 4,
+        cols: 4,
+        grid: [
+          [1,1,1,1],
+          [1,0,0,0],
+          [1,0,1,0],
+          [1,0,0,1]
+        ],
+        colorMap: { "1": "#7c3aed" }
+      },
+      {
+        id: "multi_triple_5",
+        category: "多解挑戰（找出所有解）",
+        title: "5×5 三重推理（共 3 組解）",
+        description: "非對稱多解謎題：考驗系統性分類討論，試著找出全部 3 組解！",
+        rows: 5,
+        cols: 5,
+        grid: [
+          [1,1,1,1,1],
+          [1,0,1,1,0],
+          [0,0,0,0,1],
+          [0,1,0,0,1],
+          [1,0,1,0,0]
+        ],
+        colorMap: { "1": "#0891b2" }
+      },
+      {
+        id: "multi_quad_6",
+        category: "多解挑戰（找出所有解）",
+        title: "6×6 四重變奏（共 4 組解）",
+        description: "內含兩組獨立的 2×2 歧義區（2 × 2 = 4 組解），體驗乘法原理！",
+        rows: 6,
+        cols: 6,
+        grid: [
+          [1,0,0,1,1,1],
+          [0,1,0,1,1,1],
+          [0,0,0,1,1,1],
+          [1,1,1,0,0,0],
+          [1,1,1,0,1,0],
+          [1,1,1,0,0,1]
+        ],
+        colorMap: { "1": "#d97706" }
+      },
+      {
+        id: "multi_perm_5",
+        category: "多解挑戰（找出所有解）",
+        title: "5×5 三階置換（共 6 組解）",
+        description: "右下角構成 3×3 置換矩陣（3! = 6 組解），挑戰不遺漏地收集全部 6 種排列！",
+        rows: 5,
+        cols: 5,
+        grid: [
+          [1,1,1,1,1],
+          [1,0,0,0,0],
+          [1,0,1,0,0],
+          [1,0,0,1,0],
+          [1,0,0,0,1]
+        ],
+        colorMap: { "1": "#be185d" }
       }
     ];
 
@@ -1296,7 +2008,7 @@
           gain.connect(this.ctx.destination);
           osc.start(now);
           osc.stop(now + duration);
-        } catch (e) { /* 忽略瀏覽器自動播放限制 */ }
+        } catch (e) {}
       }
 
       playFill() { this.playTone(520, "triangle", 0.06, 0.12); }
@@ -1306,6 +2018,10 @@
       playHint() {
         this.playTone(660, "sine", 0.1, 0.12, 0);
         this.playTone(880, "sine", 0.15, 0.12, 0.08);
+      }
+      playCollectOne() {
+        this.playTone(587.33, "triangle", 0.14, 0.14, 0);
+        this.playTone(880.00, "triangle", 0.22, 0.15, 0.1);
       }
       playVictory() {
         const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
@@ -1319,58 +2035,8 @@
     const sound = new SoundEngine();
 
     /* ==========================================================================
-       3. 應用程式狀態與 DOM 快取 (State & DOM References)
-       ========================================================================== */
-    const STORAGE_KEY_CUSTOM = "nonogram_studio_custom_puzzles_v1";
-
-    const state = {
-      mode: "play", // "play" | "create"
-      customPuzzles: [],
-      currentPuzzle: null,
-      playerGrid: [], // 0 = 空白, 1 = 塗黑, 2 = 叉號(X)
-      rowClues: [],
-      colClues: [],
-      manualCrossedClues: new Set(), // 手動點擊劃掉的提示數字 key: "r-0-1" / "c-2-0"
-      isSolved: false,
-      playTool: "fill", // "fill" | "mark" | "erase"
-      liveErrorCheck: false,
-      manualErrorHighlight: false,
-
-      // 計時器
-      timerSeconds: 0,
-      timerInterval: null,
-
-      // 自訂設計狀態
-      createTitle: "我的創意像素畫",
-      createRows: 10,
-      createCols: 10,
-      createGrid: [],
-      createTool: "draw", // "draw" | "erase"
-      mirrorH: false,
-      mirrorV: false,
-
-      // 拖曳繪圖與十字高亮狀態
-      isPointerDown: false,
-      dragActionValue: null,
-      hoverRow: -1,
-      hoverCol: -1,
-
-      // 列印暫存原始縮放
-      savedCellSizeBeforePrint: null
-    };
-
-    // 局部 DOM 更新快取（避免拖曳時重建整個 <table>）
-    const domCache = {
-      table: null,
-      cells: [],       // cells[r][c] -> <td>
-      rowClueThs: [],  // rowClueThs[r] -> <th>
-      colClueThs: [],  // colClueThs[c] -> <th>
-      rowClueLists: [],// rowClueLists[r] -> <div class="row-clue-list">
-      colClueLists: [] // colClueLists[c] -> <div class="col-clue-list">
-    };
-
-    /* ==========================================================================
-       4. 核心演算法：行列提示計算與強化版自動劃掉邏輯
+       3. 精確數織邏輯求解器 (Forward-Backward Line DP + MRV Backtracking)
+       用於「檢驗唯一解」與「多解挑戰計算所有解」
        ========================================================================== */
     function computeLineClues(line) {
       const clues = [];
@@ -1388,18 +2054,276 @@
     }
 
     /**
-     * 強化版提示數字自動劃掉判斷：
-     * 1. 若玩家該行/列目前的連續黑格序列已「完全吻合」提示數字（且非全 0 提示） -> 全部劃掉
-     *    （支援多解情況，不再強制綁定單一解答座標）
-     * 2. 若提示為 [0]（全空行/列） -> 整行皆標 X 或全盤過關時劃掉
-     * 3. 否則從左端與右端掃描「已被邊界或 X 封閉」的連續黑格並漸進比對；
-     *    同時檢查內部兩端皆被 X 封閉且長度唯一對應的單一提示區塊
+     * 單行/單列前向-後向動態規劃傳播 (O(L * k))
+     * line 值: -1 = 未知, 0 = 確定白, 1 = 確定黑
+     * 回傳新推導出的 [(index, val), ...]；若無解(矛盾)則回傳 null
      */
+    function propagateLineDP(line, clues) {
+      const L = line.length;
+      const blocks = (clues.length === 1 && clues[0] === 0) ? [] : clues;
+      const k = blocks.length;
+
+      const pref0 = new Int32Array(L + 1);
+      for (let i = 0; i < L; i++) {
+        pref0[i + 1] = pref0[i] + (line[i] === 0 ? 1 : 0);
+      }
+
+      const stride = k + 1;
+      const canFinish = new Uint8Array((L + 1) * stride);
+      canFinish[L * stride + k] = 1;
+
+      for (let i = L - 1; i >= 0; i--) {
+        for (let b = k; b >= 0; b--) {
+          let ok = 0;
+          if (line[i] !== 1 && canFinish[(i + 1) * stride + b]) {
+            ok = 1;
+          }
+          if (!ok && b < k) {
+            const end = i + blocks[b];
+            if (end <= L && (pref0[end] - pref0[i] === 0)) {
+              if (end === L) {
+                if (canFinish[L * stride + (b + 1)]) ok = 1;
+              } else if (line[end] !== 1 && canFinish[(end + 1) * stride + (b + 1)]) {
+                ok = 1;
+              }
+            }
+          }
+          canFinish[i * stride + b] = ok;
+        }
+      }
+
+      if (!canFinish[0]) return null;
+
+      const canReach = new Uint8Array((L + 1) * stride);
+      canReach[0] = 1;
+      const canBe0 = new Uint8Array(L);
+      const diff1 = new Int32Array(L + 1);
+
+      for (let i = 0; i < L; i++) {
+        const rowOff = i * stride;
+        for (let b = 0; b <= k; b++) {
+          if (!canReach[rowOff + b]) continue;
+
+          if (line[i] !== 1 && canFinish[(i + 1) * stride + b]) {
+            canReach[(i + 1) * stride + b] = 1;
+            canBe0[i] = 1;
+          }
+
+          if (b < k) {
+            const end = i + blocks[b];
+            if (end <= L && (pref0[end] - pref0[i] === 0)) {
+              if (end === L) {
+                if (canFinish[L * stride + (b + 1)]) {
+                  canReach[L * stride + (b + 1)] = 1;
+                  diff1[i]++;
+                  diff1[end]--;
+                }
+              } else if (line[end] !== 1 && canFinish[(end + 1) * stride + (b + 1)]) {
+                canReach[(end + 1) * stride + (b + 1)] = 1;
+                diff1[i]++;
+                diff1[end]--;
+                canBe0[end] = 1;
+              }
+            }
+          }
+        }
+      }
+
+      const changed = [];
+      let cur1 = 0;
+      for (let j = 0; j < L; j++) {
+        cur1 += diff1[j];
+        const c1 = cur1 > 0;
+        const c0 = canBe0[j] === 1;
+        if (!c1 && !c0) return null;
+        if (line[j] === -1) {
+          if (c1 && !c0) changed.push([j, 1]);
+          else if (c0 && !c1) changed.push([j, 0]);
+        }
+      }
+      return changed;
+    }
+
+    /**
+     * 求解數織謎題
+     * @returns {{ solutions: number[][][], nodes: number, timedOut: boolean, capped: boolean }}
+     */
+    function solveNonogram(rowClues, colClues, maxSolutions = 20, maxNodes = 18000, timeLimitMs = 1500) {
+      const R = rowClues.length;
+      const C = colClues.length;
+      const solutions = [];
+      let nodes = 0;
+      let timedOut = false;
+      const startTime = performance.now();
+
+      function propagate(grid, dirtyRows, dirtyCols) {
+        while (dirtyRows.size > 0 || dirtyCols.size > 0) {
+          if (dirtyRows.size > 0) {
+            const r = dirtyRows.values().next().value;
+            dirtyRows.delete(r);
+            const res = propagateLineDP(grid[r], rowClues[r]);
+            if (res === null) return false;
+            for (let i = 0; i < res.length; i++) {
+              const [c, val] = res[i];
+              grid[r][c] = val;
+              dirtyCols.add(c);
+            }
+          } else {
+            const c = dirtyCols.values().next().value;
+            dirtyCols.delete(c);
+            const col = new Array(R);
+            for (let r = 0; r < R; r++) col[r] = grid[r][c];
+            const res = propagateLineDP(col, colClues[c]);
+            if (res === null) return false;
+            for (let i = 0; i < res.length; i++) {
+              const [r, val] = res[i];
+              grid[r][c] = val;
+              dirtyRows.add(r);
+            }
+          }
+        }
+        return true;
+      }
+
+      function backtrack(grid, dirtyRows, dirtyCols) {
+        if (solutions.length >= maxSolutions || timedOut) return;
+        nodes++;
+        if (nodes > maxNodes || (nodes % 64 === 0 && performance.now() - startTime > timeLimitMs)) {
+          timedOut = true;
+          return;
+        }
+        if (!propagate(grid, dirtyRows, dirtyCols)) return;
+
+        // MRV 啟發式：挑選未知格數最少的列/欄交點
+        const rowUnk = new Int32Array(R);
+        const colUnk = new Int32Array(C);
+        for (let r = 0; r < R; r++) {
+          for (let c = 0; c < C; c++) {
+            if (grid[r][c] === -1) {
+              rowUnk[r]++;
+              colUnk[c]++;
+            }
+          }
+        }
+
+        let bestR = -1, bestC = -1, bestScore = 1e9;
+        for (let r = 0; r < R; r++) {
+          if (rowUnk[r] === 0) continue;
+          for (let c = 0; c < C; c++) {
+            if (grid[r][c] === -1) {
+              const score = Math.min(rowUnk[r], colUnk[c]);
+              if (score < bestScore) {
+                bestScore = score;
+                bestR = r;
+                bestC = c;
+                if (score === 1) break;
+              }
+            }
+          }
+          if (bestScore === 1) break;
+        }
+
+        if (bestR === -1) {
+          solutions.push(grid.map(row => row.slice()));
+          return;
+        }
+
+        for (const tryVal of [1, 0]) {
+          if (solutions.length >= maxSolutions || timedOut) break;
+          const nextGrid = grid.map(row => row.slice());
+          nextGrid[bestR][bestC] = tryVal;
+          backtrack(nextGrid, new Set([bestR]), new Set([bestC]));
+        }
+      }
+
+      const initGrid = Array.from({ length: R }, () => new Array(C).fill(-1));
+      const allRows = new Set(Array.from({ length: R }, (_, i) => i));
+      const allCols = new Set(Array.from({ length: C }, (_, i) => i));
+      backtrack(initGrid, allRows, allCols);
+
+      return {
+        solutions,
+        nodes,
+        timedOut,
+        capped: solutions.length >= maxSolutions
+      };
+    }
+
+    function gridToKey(grid) {
+      return grid.map(row => row.map(v => (v === 1 ? "1" : "0")).join("")).join("|");
+    }
+
+    /* ==========================================================================
+       4. 應用程式狀態與 DOM 快取 (State & DOM References)
+       ========================================================================== */
+    const STORAGE_KEY_CUSTOM = "nonogram_studio_custom_puzzles_v1";
+    const STORAGE_KEY_LEADERBOARD = "nonogram_studio_leaderboard_v1";
+    const STORAGE_KEY_PLAYER_NAME = "nonogram_studio_last_player_v1";
+    const LEADERBOARD_ADMIN_PWD = "LKJHMATH";
+
+    const state = {
+      mode: "play", // "play" | "create"
+      customPuzzles: [],
+      tempPlayPuzzle: null, // 暫存未儲存的自訂設計或匯入關卡
+      leaderboard: {},      // { [puzzleKey]: { title, size, entries: [{ id, name, seconds, timestamp }] } }
+      lastRecordedEntryId: null,
+      scoreSubmittedForCurrentRun: false,
+      currentPuzzle: null,
+      playerGrid: [], // 0 = 空白, 1 = 塗黑, 2 = 叉號(X)
+      rowClues: [],
+      colClues: [],
+      manualCrossedClues: new Set(),
+      isSolved: false,
+      playTool: "fill",
+      liveErrorCheck: false,
+      manualErrorHighlight: false,
+
+      // 多解挑戰模式狀態
+      allSolutions: [],        // 求解器算出的所有解（最多 20 組）
+      totalSolutionsCapped: false,
+      foundSolutions: [],      // 玩家已收集到的解 { key, grid }
+
+      // 計時器
+      timerSeconds: 0,
+      timerInterval: null,
+
+      // 自訂設計狀態
+      createTitle: "題目自訂",
+      createRows: 10,
+      createCols: 10,
+      createGrid: [],
+      createTool: "draw",
+      mirrorH: false,
+      mirrorV: false,
+
+      // 唯一解檢驗彈窗暫存
+      uniqueCheckResult: null,
+      altSolIndex: 0,
+
+      // 拖曳與高亮
+      isPointerDown: false,
+      dragActionValue: null,
+      hoverRow: -1,
+      hoverCol: -1,
+      savedCellSizeBeforePrint: null
+    };
+
+    const domCache = {
+      table: null,
+      cells: [],
+      rowClueThs: [],
+      colClueThs: [],
+      rowClueLists: [],
+      colClueLists: []
+    };
+
+    /* ==========================================================================
+       5. 提示數字自動劃掉邏輯
+       ========================================================================== */
     function getSatisfiedClueFlags(playerLine, clues) {
       const n = clues.length;
       const flags = new Array(n).fill(false);
 
-      // 情況 A：全空行/列提示 [0]
       if (n === 1 && clues[0] === 0) {
         if (state.isSolved || playerLine.every(v => v === 2)) {
           flags[0] = true;
@@ -1407,17 +2331,12 @@
         return flags;
       }
 
-      // 情況 B：玩家目前填出的連續黑格序列已與提示完全一致
       const playerBinary = playerLine.map(v => (v === 1 ? 1 : 0));
       const playerClues = computeLineClues(playerBinary);
-      if (
-        playerClues.length === n &&
-        playerClues.every((val, idx) => val === clues[idx])
-      ) {
+      if (playerClues.length === n && playerClues.every((val, idx) => val === clues[idx])) {
         return flags.fill(true);
       }
 
-      // 情況 C：從左側掃描已被邊界或 X (2) 封閉的連續黑格
       let idx = 0;
       let leftClueIdx = 0;
       while (idx < playerLine.length && leftClueIdx < n) {
@@ -1444,7 +2363,6 @@
         }
       }
 
-      // 情況 D：從右側掃描已被邊界或 X (2) 封閉的連續黑格
       idx = playerLine.length - 1;
       let rightClueIdx = n - 1;
       while (idx >= 0 && rightClueIdx >= leftClueIdx) {
@@ -1475,7 +2393,7 @@
     }
 
     /* ==========================================================================
-       5. 題庫管理、匯出/匯入編碼壓縮 (RLE + Base64)
+       6. 題庫管理、匯出/匯入編碼壓縮 (RLE + Base64)
        ========================================================================== */
     function loadCustomPuzzlesFromStorage() {
       try {
@@ -1484,9 +2402,7 @@
           const parsed = JSON.parse(raw);
           if (Array.isArray(parsed)) state.customPuzzles = parsed;
         }
-      } catch (e) {
-        console.warn("無法讀取 localStorage", e);
-      }
+      } catch (e) {}
     }
 
     function saveCustomPuzzlesToStorage() {
@@ -1495,6 +2411,208 @@
       } catch (e) {
         showToast("⚠️ 儲存空間不足，無法寫入本機題庫");
       }
+    }
+
+    /* --- 單機各題排行榜管理 (localStorage) --- */
+    function loadLeaderboardFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_LEADERBOARD);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === "object") state.leaderboard = parsed;
+        }
+      } catch (e) {
+        state.leaderboard = {};
+      }
+    }
+
+    function saveLeaderboardToStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEY_LEADERBOARD, JSON.stringify(state.leaderboard));
+      } catch (e) {
+        showToast("⚠️ 本機儲存空間不足，無法寫入排行榜");
+      }
+    }
+
+    function getLeaderboardKey(puzzle) {
+      if (!puzzle) return "";
+      const isKnown =
+        BUILTIN_PUZZLES.some(p => p.id === puzzle.id) ||
+        state.customPuzzles.some(p => p.id === puzzle.id);
+      if (isKnown) return puzzle.id;
+      // 未存檔的自訂／匯入題目以「名稱 + 尺寸 + 棋盤特徵」作為穩定鍵值，重複挑戰同一自訂題可共用榜單
+      let hash = 0;
+      const sig = `${puzzle.title}|${puzzle.cols}x${puzzle.rows}|${gridToKey(puzzle.grid)}`;
+      for (let i = 0; i < sig.length; i++) {
+        hash = ((hash << 5) - hash + sig.charCodeAt(i)) | 0;
+      }
+      return `custom_lb_${Math.abs(hash).toString(36)}`;
+    }
+
+    function formatDateTime(ts) {
+      const d = new Date(ts);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      const hh = String(d.getHours()).padStart(2, "0");
+      const mm = String(d.getMinutes()).padStart(2, "0");
+      return `${y}/${m}/${day} ${hh}:${mm}`;
+    }
+
+    function recordLeaderboardScore(puzzle, playerName, seconds) {
+      const key = getLeaderboardKey(puzzle);
+      if (!state.leaderboard[key]) {
+        state.leaderboard[key] = {
+          title: puzzle.title,
+          size: `${puzzle.cols}×${puzzle.rows}`,
+          entries: []
+        };
+      } else {
+        state.leaderboard[key].title = puzzle.title;
+        state.leaderboard[key].size = `${puzzle.cols}×${puzzle.rows}`;
+      }
+
+      const entry = {
+        id: "rec_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+        name: playerName,
+        seconds: seconds,
+        timestamp: Date.now()
+      };
+
+      const entries = state.leaderboard[key].entries;
+      entries.push(entry);
+      entries.sort((a, b) => (a.seconds - b.seconds) || (a.timestamp - b.timestamp));
+      if (entries.length > 30) entries.length = 30;
+
+      saveLeaderboardToStorage();
+      try { localStorage.setItem(STORAGE_KEY_PLAYER_NAME, playerName); } catch (e) {}
+
+      const rank = entries.findIndex(e => e.id === entry.id) + 1;
+      state.lastRecordedEntryId = entry.id;
+      return { key, rank, total: entries.length };
+    }
+
+    function populateLeaderboardDropdown(selectedKey = null) {
+      const select = document.getElementById("lb-puzzle-select");
+      select.innerHTML = "";
+      const addedKeys = new Set();
+
+      const addOpt = (parent, key, label) => {
+        if (addedKeys.has(key)) return;
+        addedKeys.add(key);
+        const opt = document.createElement("option");
+        opt.value = key;
+        const cnt = state.leaderboard[key]?.entries?.length || 0;
+        opt.textContent = cnt > 0 ? `${label}（${cnt} 筆紀錄）` : label;
+        parent.appendChild(opt);
+      };
+
+      // 1. 若目前有未存檔自訂／匯入題目，優先放最上方方便檢視
+      if (state.currentPuzzle) {
+        const curKey = getLeaderboardKey(state.currentPuzzle);
+        const isBuiltOrSaved =
+          BUILTIN_PUZZLES.some(p => p.id === state.currentPuzzle.id) ||
+          state.customPuzzles.some(p => p.id === state.currentPuzzle.id);
+        if (!isBuiltOrSaved) {
+          const curGroup = document.createElement("optgroup");
+          curGroup.label = "📝 目前挑戰（自訂／匯入）";
+          addOpt(curGroup, curKey, `${state.currentPuzzle.title} (${state.currentPuzzle.cols}×${state.currentPuzzle.rows})`);
+          select.appendChild(curGroup);
+        }
+      }
+
+      // 2. 內建關卡分組
+      const categories = [...new Set(BUILTIN_PUZZLES.map(p => p.category))];
+      categories.forEach(cat => {
+        const grp = document.createElement("optgroup");
+        grp.label = cat.includes("多解") ? `🔀 ${cat}` : `★ ${cat}`;
+        BUILTIN_PUZZLES.filter(p => p.category === cat).forEach(p => {
+          addOpt(grp, p.id, `${p.title} (${p.cols}×${p.rows})`);
+        });
+        select.appendChild(grp);
+      });
+
+      // 3. 我的自訂題庫
+      if (state.customPuzzles.length > 0) {
+        const cGrp = document.createElement("optgroup");
+        cGrp.label = "🎨 我的自訂題庫";
+        state.customPuzzles.forEach(p => {
+          addOpt(cGrp, p.id, `${p.title} (${p.cols}×${p.rows})`);
+        });
+        select.appendChild(cGrp);
+      }
+
+      // 4. 其他曾有紀錄的自訂／匯入題目
+      const otherKeys = Object.keys(state.leaderboard).filter(
+        k => !addedKeys.has(k) && state.leaderboard[k]?.entries?.length > 0
+      );
+      if (otherKeys.length > 0) {
+        const oGrp = document.createElement("optgroup");
+        oGrp.label = "📌 其他自訂／匯入紀錄";
+        otherKeys.forEach(k => {
+          const item = state.leaderboard[k];
+          addOpt(oGrp, k, `${item.title || "題目自訂"} (${item.size || ""})`);
+        });
+        select.appendChild(oGrp);
+      }
+
+      if (selectedKey && addedKeys.has(selectedKey)) {
+        select.value = selectedKey;
+      } else if (state.currentPuzzle) {
+        const curKey = getLeaderboardKey(state.currentPuzzle);
+        if (addedKeys.has(curKey)) select.value = curKey;
+      }
+    }
+
+    function renderLeaderboardTable(puzzleKey) {
+      const tbody = document.getElementById("lb-table-body");
+      tbody.innerHTML = "";
+      const record = state.leaderboard[puzzleKey];
+      const entries = record && Array.isArray(record.entries) ? record.entries : [];
+
+      if (entries.length === 0) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="4" class="lb-empty">目前此題尚無挑戰紀錄，快來成為第一名吧！</td>`;
+        tbody.appendChild(tr);
+        return;
+      }
+
+      entries.forEach((entry, idx) => {
+        const tr = document.createElement("tr");
+        if (entry.id === state.lastRecordedEntryId) tr.classList.add("lb-highlight-row");
+        const rankText = idx === 0 ? "🥇 1" : idx === 1 ? "🥈 2" : idx === 2 ? "🥉 3" : `#${idx + 1}`;
+
+        const tdRank = document.createElement("td");
+        tdRank.textContent = rankText;
+
+        const tdName = document.createElement("td");
+        tdName.textContent = entry.name;
+
+        const tdTime = document.createElement("td");
+        tdTime.textContent = formatTime(entry.seconds);
+        tdTime.style.fontWeight = "700";
+
+        const tdDate = document.createElement("td");
+        tdDate.textContent = formatDateTime(entry.timestamp);
+        tdDate.style.color = "var(--text-secondary)";
+        tdDate.style.fontSize = "0.8rem";
+
+        tr.appendChild(tdRank);
+        tr.appendChild(tdName);
+        tr.appendChild(tdTime);
+        tr.appendChild(tdDate);
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openLeaderboardModal(targetPuzzleKey = null) {
+      const key = targetPuzzleKey || (state.currentPuzzle ? getLeaderboardKey(state.currentPuzzle) : BUILTIN_PUZZLES[0].id);
+      populateLeaderboardDropdown(key);
+      const selectedVal = document.getElementById("lb-puzzle-select").value;
+      renderLeaderboardTable(selectedVal);
+      document.getElementById("lb-clear-panel").classList.remove("open");
+      document.getElementById("lb-clear-password").value = "";
+      document.getElementById("modal-leaderboard").classList.add("open");
     }
 
     function encodePuzzleShareCode(puzzle) {
@@ -1525,7 +2643,7 @@
 
       const rows = parseInt(payload.r, 10);
       const cols = parseInt(payload.c, 10);
-      if (!rows || !cols || rows < 3 || cols < 3 || rows > 30 || cols > 30) {
+      if (!rows || !cols || rows < 3 || cols < 3 || rows > 100 || cols > 100) {
         throw new Error("網格尺寸無效");
       }
 
@@ -1564,7 +2682,7 @@
     }
 
     /* ==========================================================================
-       6. 介面渲染與局部 DOM 更新機制 (Board Render & Partial DOM Updates)
+       7. 介面渲染、多解面板與局部 DOM 更新
        ========================================================================== */
     const gridMount = document.getElementById("grid-mount");
 
@@ -1572,10 +2690,26 @@
       const select = document.getElementById("puzzle-select");
       select.innerHTML = "";
 
+      // 若目前有未儲存的自訂設計或匯入關卡，顯示於選單最上方，確保下拉選單呈現自訂名稱
+      const hasTemp =
+        state.tempPlayPuzzle &&
+        !BUILTIN_PUZZLES.some(p => p.id === state.tempPlayPuzzle.id) &&
+        !state.customPuzzles.some(p => p.id === state.tempPlayPuzzle.id);
+
+      if (hasTemp) {
+        const tempGroup = document.createElement("optgroup");
+        tempGroup.label = "📝 目前挑戰（自訂／匯入）";
+        const opt = document.createElement("option");
+        opt.value = state.tempPlayPuzzle.id;
+        opt.textContent = `${state.tempPlayPuzzle.title} (${state.tempPlayPuzzle.cols}×${state.tempPlayPuzzle.rows})`;
+        tempGroup.appendChild(opt);
+        select.appendChild(tempGroup);
+      }
+
       const categories = [...new Set(BUILTIN_PUZZLES.map(p => p.category))];
       categories.forEach(cat => {
         const optgroup = document.createElement("optgroup");
-        optgroup.label = `★ ${cat}`;
+        optgroup.label = cat.includes("多解") ? `🔀 ${cat}` : `★ ${cat}`;
         BUILTIN_PUZZLES.filter(p => p.category === cat).forEach(p => {
           const opt = document.createElement("option");
           opt.value = p.id;
@@ -1602,14 +2736,142 @@
       }
     }
 
+    /**
+     * 繪製縮圖 Canvas（支援標註差異格 diffGrid）
+     */
+    function drawGridToCanvas(canvas, grid, fillColor = "#1e293b", diffGrid = null, maxPx = 240) {
+      const rows = grid.length;
+      const cols = grid[0].length;
+      const maxDim = Math.max(rows, cols);
+      const cellPx = Math.max(2, Math.floor(maxPx / maxDim));
+      canvas.width = cols * cellPx;
+      canvas.height = rows * cellPx;
+      const ctx = canvas.getContext("2d");
+
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const drawGridLines = cellPx >= 5;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const isDiff = diffGrid && diffGrid[r][c] !== grid[r][c];
+          if (grid[r][c] === 1) {
+            ctx.fillStyle = isDiff ? "#ea580c" : fillColor;
+            ctx.fillRect(c * cellPx, r * cellPx, cellPx, cellPx);
+          } else if (isDiff) {
+            ctx.fillStyle = "#ffedd5";
+            ctx.fillRect(c * cellPx, r * cellPx, cellPx, cellPx);
+          }
+          if (drawGridLines || isDiff) {
+            ctx.strokeStyle = isDiff ? "#ea580c" : "#cbd5e1";
+            ctx.lineWidth = isDiff ? 1.5 : 0.6;
+            ctx.strokeRect(c * cellPx + 0.5, r * cellPx + 0.5, cellPx - 1, cellPx - 1);
+          }
+        }
+      }
+    }
+
+    /**
+     * 當畫布超過 25×25 時自動調整縮放比例，讓大尺寸（如 60×60、100×100）可完整操作
+     */
+    function autoAdjustZoomForGrid(rows, cols) {
+      const maxDim = Math.max(rows, cols);
+      let targetPct = 100;
+      if (maxDim > 75) targetPct = 28;
+      else if (maxDim > 55) targetPct = 36;
+      else if (maxDim > 40) targetPct = 45;
+      else if (maxDim > 25) targetPct = 62;
+      else return;
+
+      const slider = document.getElementById("zoom-slider");
+      slider.value = targetPct;
+      document.getElementById("zoom-val").textContent = `${targetPct}%`;
+      document.documentElement.style.setProperty("--cell-size", `${Math.max(8, Math.round((32 * targetPct) / 100))}px`);
+    }
+
+    /**
+     * 更新多解挑戰模式的收集面板與縮圖卡片
+     */
+    function renderMultiSolutionPanel() {
+      const panel = document.getElementById("multi-sol-panel");
+      const total = state.allSolutions.length;
+      if (state.mode !== "play" || total <= 1) {
+        panel.classList.remove("active");
+        return;
+      }
+
+      panel.classList.add("active");
+      const totalLabel = state.totalSolutionsCapped ? `${total}+` : `${total}`;
+      document.getElementById("multi-sol-counter").textContent =
+        `已收集解答：${state.foundSolutions.length} / ${totalLabel} 組`;
+
+      const container = document.getElementById("multi-sol-cards");
+      container.innerHTML = "";
+
+      state.foundSolutions.forEach((solObj, idx) => {
+        const card = document.createElement("div");
+        card.className = "sol-thumb-card";
+        card.title = "點擊將此解答載入棋盤檢視或微調";
+
+        const canvas = document.createElement("canvas");
+        drawGridToCanvas(canvas, solObj.grid, state.currentPuzzle.colorMap?.["1"] || "#7c3aed", null, 52);
+
+        const label = document.createElement("span");
+        label.textContent = `解 #${idx + 1}`;
+
+        card.appendChild(canvas);
+        card.appendChild(label);
+        card.addEventListener("click", () => {
+          state.playerGrid = solObj.grid.map(row => row.slice());
+          state.manualErrorHighlight = false;
+          for (let r = 0; r < state.currentPuzzle.rows; r++) {
+            updateRowCluesDOM(r);
+            for (let c = 0; c < state.currentPuzzle.cols; c++) updateCellDOM(r, c);
+          }
+          for (let c = 0; c < state.currentPuzzle.cols; c++) updateColCluesDOM(c);
+          updatePlayStats();
+          showToast(`👀 已載入「解 #${idx + 1}」，您可直接微調格子找出其他解！`);
+        });
+        container.appendChild(card);
+      });
+
+      // 顯示尚未找到的空位框（最多顯示至 12 個，避免畫面過長）
+      const remaining = Math.max(0, Math.min(total, 12) - state.foundSolutions.length);
+      for (let i = 0; i < remaining; i++) {
+        const slot = document.createElement("div");
+        slot.className = "sol-thumb-slot";
+        slot.textContent = `解 #${state.foundSolutions.length + i + 1} ?`;
+        container.appendChild(slot);
+      }
+      if (total > 12 && state.foundSolutions.length < total) {
+        const more = document.createElement("div");
+        more.className = "sol-thumb-slot";
+        more.textContent = `…共 ${totalLabel} 組`;
+        container.appendChild(more);
+      }
+    }
+
     function startPlayPuzzle(puzzle) {
+      // 確保自訂關卡一定有顯示名稱（未命名則顯示「題目自訂」）
+      if (!puzzle.title || !puzzle.title.trim()) {
+        puzzle.title = "題目自訂";
+      }
       state.currentPuzzle = puzzle;
       state.isSolved = false;
+      state.scoreSubmittedForCurrentRun = false;
       state.manualErrorHighlight = false;
       state.manualCrossedClues.clear();
+      state.foundSolutions = [];
+
+      const isSavedOrBuiltin =
+        BUILTIN_PUZZLES.some(p => p.id === puzzle.id) ||
+        state.customPuzzles.some(p => p.id === puzzle.id);
+      if (!isSavedOrBuiltin) {
+        state.tempPlayPuzzle = puzzle;
+      }
+      populatePuzzleDropdown(puzzle.id);
       state.playerGrid = Array.from({ length: puzzle.rows }, () => Array(puzzle.cols).fill(0));
 
-      // 預先計算題目的行列提示數字
       state.rowClues = puzzle.grid.map(row => computeLineClues(row));
       state.colClues = [];
       for (let c = 0; c < puzzle.cols; c++) {
@@ -1618,14 +2880,40 @@
         state.colClues.push(computeLineClues(colArr));
       }
 
+      // 偵測本題是否有多組解（大於 20×20 時略過自動窮舉以確保載入流暢）
+      if (puzzle.rows * puzzle.cols <= 400) {
+        const solveRes = solveNonogram(state.rowClues, state.colClues, 20, 8000, 350);
+        if (solveRes.solutions.length > 1) {
+          state.allSolutions = solveRes.solutions;
+          state.totalSolutionsCapped = solveRes.capped;
+        } else {
+          state.allSolutions = [puzzle.grid.map(r => r.slice())];
+          state.totalSolutionsCapped = false;
+        }
+      } else {
+        state.allSolutions = [puzzle.grid.map(r => r.slice())];
+        state.totalSolutionsCapped = false;
+      }
+      autoAdjustZoomForGrid(puzzle.rows, puzzle.cols);
+
       document.getElementById("board-title").textContent = puzzle.title;
-      document.getElementById("board-subtitle").textContent =
-        `尺寸：${puzzle.cols} 欄 × ${puzzle.rows} 列 ｜ 拖曳塗黑或標記 X；點擊提示數字可手動切換劃線。`;
+      const isMulti = state.allSolutions.length > 1;
+      const descPart = puzzle.description
+        ? puzzle.description
+        : isMulti
+          ? `本題共有 ${state.allSolutions.length}${state.totalSolutionsCapped ? "+" : ""} 組解答！請試著收集所有解。`
+          : `尺寸：${puzzle.cols} 欄 × ${puzzle.rows} 列 ｜ 拖曳塗黑或標記 X；點擊提示數字可手動切換劃線。`;
+      document.getElementById("board-subtitle").textContent = descPart;
+
       document.getElementById("print-title").textContent = `數織邏輯推理學習單 － ${puzzle.title}`;
-      document.getElementById("print-size-info").textContent = `規格：${puzzle.cols} × ${puzzle.rows}`;
+      document.getElementById("print-size-info").textContent =
+        isMulti
+          ? `規格：${puzzle.cols} × ${puzzle.rows}（多解挑戰：共 ${state.allSolutions.length} 組解）`
+          : `規格：${puzzle.cols} × ${puzzle.rows}`;
 
       resetTimer();
       startTimer();
+      renderMultiSolutionPanel();
       renderBoard();
       updatePlayStats();
     }
@@ -1640,21 +2928,26 @@
       state.createRows = rows;
       state.createCols = cols;
       state.createGrid = newGrid;
+      resetCreatorUniquenessBadge();
 
       if (state.mode === "create") {
         document.getElementById("board-title").textContent = `🎨 設計畫布：${state.createTitle}`;
         document.getElementById("board-subtitle").textContent =
-          `尺寸：${cols} 欄 × ${rows} 列 ｜ 點擊或拖曳繪製圖案，上方與左方將即時計算數字提示。`;
+          `尺寸：${cols} 欄 × ${rows} 列 ｜ 繪製完畢後可按「🔎 檢驗唯一解」確認題目是否只有唯一解答。`;
         document.getElementById("print-title").textContent = `數織邏輯推理學習單 － ${state.createTitle}`;
         document.getElementById("print-size-info").textContent = `規格：${cols} × ${rows}`;
+        renderMultiSolutionPanel();
         renderBoard();
         validateCreatorGrid();
       }
     }
 
-    /**
-     * 完整建立棋盤表格並建立 DOM 快取（僅在載入題目、切換模式、調整尺寸時呼叫）
-     */
+    function resetCreatorUniquenessBadge() {
+      const badge = document.getElementById("creator-unique-badge");
+      badge.style.display = "none";
+      state.uniqueCheckResult = null;
+    }
+
     function renderBoard() {
       const isPlay = state.mode === "play";
       const rows = isPlay ? state.currentPuzzle.rows : state.createRows;
@@ -1670,7 +2963,6 @@
         }
       }
 
-      // 重設快取
       domCache.cells = Array.from({ length: rows }, () => Array(cols));
       domCache.rowClueThs = Array(rows);
       domCache.colClueThs = Array(cols);
@@ -1683,7 +2975,6 @@
       table.className = "nonogram-table";
       table.id = "nonogram-table";
 
-      // 1. 表頭列
       const thead = document.createElement("thead");
       const headerRow = document.createElement("tr");
 
@@ -1709,7 +3000,6 @@
       thead.appendChild(headerRow);
       table.appendChild(thead);
 
-      // 2. 表身
       const tbody = document.createElement("tbody");
       for (let r = 0; r < rows; r++) {
         const tr = document.createElement("tr");
@@ -1747,23 +3037,68 @@
       gridMount.innerHTML = "";
       gridMount.appendChild(table);
 
-      // 填入初始格子與提示數字狀態
       for (let r = 0; r < rows; r++) {
         updateRowCluesDOM(r);
-        for (let c = 0; c < cols; c++) {
-          updateCellDOM(r, c);
-        }
+        for (let c = 0; c < cols; c++) updateCellDOM(r, c);
       }
-      for (let c = 0; c < cols; c++) {
-        updateColCluesDOM(c);
-      }
+      for (let c = 0; c < cols; c++) updateColCluesDOM(c);
 
       attachGridPointerEvents(table);
     }
 
     /**
-     * 局部更新單一格子的視覺狀態（O(1) DOM 操作）
+     * 取得目前最接近玩家盤面的「未找到解答」（多解模式用）或預設解答（唯一解用）
      */
+    function getTargetSolutionForAssist() {
+      if (state.allSolutions.length <= 1) return state.currentPuzzle.grid;
+      const foundKeys = new Set(state.foundSolutions.map(s => s.key));
+      let candidates = state.allSolutions.filter(g => !foundKeys.has(gridToKey(g)));
+      if (candidates.length === 0) candidates = state.allSolutions;
+
+      let best = candidates[0];
+      let minDist = Infinity;
+      const rows = state.currentPuzzle.rows;
+      const cols = state.currentPuzzle.cols;
+      for (const sol of candidates) {
+        let dist = 0;
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const p = state.playerGrid[r][c];
+            if ((p === 1 && sol[r][c] === 0) || (p === 2 && sol[r][c] === 1)) dist += 2;
+            else if (p === 0 && sol[r][c] === 1) dist += 1;
+          }
+        }
+        if (dist < minDist) {
+          minDist = dist;
+          best = sol;
+        }
+      }
+      return best;
+    }
+
+    /**
+     * 檢查單一格子是否在「所有候選解」中皆為錯誤（多解模式下僅在所有解都不合時才標紅）
+     */
+    function isCellError(r, c, val) {
+      if (val === 0) return false;
+      const targetSols = state.allSolutions.length > 1 ? state.allSolutions : [state.currentPuzzle.grid];
+      // 若至少有一組解與目前整盤標記相容且該格符合，就不算錯；簡化版：以最接近解比對
+      if (targetSols.length === 1) {
+        const ans = targetSols[0][r][c];
+        return (val === 1 && ans === 0) || (val === 2 && ans === 1);
+      }
+      // 多解模式：若該格在「所有解答」中都不可能是這個值（必錯格），則標紅
+      const expected = val === 1 ? 1 : 0;
+      const possibleInAny = targetSols.some(sol => sol[r][c] === expected);
+      if (!possibleInAny) return true;
+      // 若使用者手動按檢查答案，且目前盤面與所有解皆衝突，則比對最接近的未找到解
+      if (state.manualErrorHighlight) {
+        const closest = getTargetSolutionForAssist();
+        return (val === 1 && closest[r][c] === 0) || (val === 2 && closest[r][c] === 1);
+      }
+      return false;
+    }
+
     function updateCellDOM(r, c) {
       const td = domCache.cells[r] && domCache.cells[r][c];
       if (!td) return;
@@ -1786,14 +3121,10 @@
         isPlay &&
         !state.isSolved &&
         (state.liveErrorCheck || state.manualErrorHighlight) &&
-        ((val === 1 && state.currentPuzzle.grid[r][c] === 0) ||
-         (val === 2 && state.currentPuzzle.grid[r][c] === 1));
+        isCellError(r, c, val);
       td.classList.toggle("error-cell", showError);
     }
 
-    /**
-     * 局部更新所有格子的錯誤標示（不重建表格）
-     */
     function updateAllErrorHighlights() {
       if (state.mode !== "play" || !state.currentPuzzle) return;
       for (let r = 0; r < state.currentPuzzle.rows; r++) {
@@ -1803,9 +3134,6 @@
       }
     }
 
-    /**
-     * 局部更新單一橫列的提示數字
-     */
     function updateRowCluesDOM(r) {
       const container = domCache.rowClueLists[r];
       if (!container) return;
@@ -1820,7 +3148,6 @@
         ? getSatisfiedClueFlags(state.playerGrid[r], clues)
         : clues.map(() => false);
 
-      // 若數量一致且在挑戰模式，直接更新既有 span class，避免重建節點
       if (isPlay && container.children.length === clues.length) {
         for (let idx = 0; idx < clues.length; idx++) {
           const span = container.children[idx];
@@ -1847,9 +3174,6 @@
       });
     }
 
-    /**
-     * 局部更新單一直欄的提示數字
-     */
     function updateColCluesDOM(c) {
       const container = domCache.colClueLists[c];
       if (!container) return;
@@ -1900,12 +3224,11 @@
     }
 
     /* ==========================================================================
-       7. 滑鼠與觸控互動邏輯 (Pointer Events + Clue Manual Cross)
+       8. 滑鼠與觸控互動邏輯
        ========================================================================== */
     function attachGridPointerEvents(table) {
       table.addEventListener("contextmenu", e => e.preventDefault());
 
-      // 點擊提示數字手動切換劃掉狀態（僅限挑戰模式）
       table.addEventListener("click", e => {
         const clueEl = e.target.closest(".clue-num.clickable");
         if (!clueEl || state.mode !== "play" || state.isSolved) return;
@@ -1939,21 +3262,14 @@
           const currentVal = state.playerGrid[r][c];
           const effectiveTool = e.button === 2 ? "mark" : state.playTool;
 
-          if (effectiveTool === "fill") {
-            state.dragActionValue = currentVal === 1 ? 0 : 1;
-          } else if (effectiveTool === "mark") {
-            state.dragActionValue = currentVal === 2 ? 0 : 2;
-          } else {
-            state.dragActionValue = 0;
-          }
+          if (effectiveTool === "fill") state.dragActionValue = currentVal === 1 ? 0 : 1;
+          else if (effectiveTool === "mark") state.dragActionValue = currentVal === 2 ? 0 : 2;
+          else state.dragActionValue = 0;
+
           applyPlayCellChange(r, c, state.dragActionValue);
         } else {
           const currentVal = state.createGrid[r][c];
-          if (state.createTool === "draw") {
-            state.dragActionValue = currentVal === 1 ? 0 : 1;
-          } else {
-            state.dragActionValue = 0;
-          }
+          state.dragActionValue = state.createTool === "draw" ? (currentVal === 1 ? 0 : 1) : 0;
           applyCreatorCellChange(r, c, state.dragActionValue);
         }
       });
@@ -1967,7 +3283,6 @@
         const c = parseInt(cell.dataset.c, 10);
 
         updateAxisHighlight(r, c);
-
         if (!state.isPointerDown) return;
 
         if (state.mode === "play") {
@@ -1978,9 +3293,7 @@
         }
       });
 
-      table.addEventListener("pointerleave", () => {
-        updateAxisHighlight(-1, -1);
-      });
+      table.addEventListener("pointerleave", () => updateAxisHighlight(-1, -1));
     }
 
     window.addEventListener("pointerup", () => {
@@ -1988,9 +3301,6 @@
       state.dragActionValue = null;
     });
 
-    /**
-     * 高效能十字行列高亮導引（直接操作快取節點，不全域搜尋 DOM）
-     */
     function updateAxisHighlight(r, c) {
       if (state.hoverRow === r && state.hoverCol === c) return;
 
@@ -1999,7 +3309,6 @@
       const rows = domCache.cells.length;
       const cols = rows > 0 ? domCache.cells[0].length : 0;
 
-      // 清除前一次的高亮
       if (prevR >= 0 && prevR < rows) {
         if (domCache.rowClueThs[prevR]) domCache.rowClueThs[prevR].classList.remove("highlight-axis");
         for (let j = 0; j < cols; j++) domCache.cells[prevR][j].classList.remove("highlight-axis");
@@ -2013,30 +3322,20 @@
       state.hoverCol = c;
       if (r < 0 || c < 0 || r >= rows || c >= cols) return;
 
-      // 套用新的高亮
       if (domCache.rowClueThs[r]) domCache.rowClueThs[r].classList.add("highlight-axis");
       if (domCache.colClueThs[c]) domCache.colClueThs[c].classList.add("highlight-axis");
       for (let j = 0; j < cols; j++) domCache.cells[r][j].classList.add("highlight-axis");
       for (let i = 0; i < rows; i++) domCache.cells[i][c].classList.add("highlight-axis");
     }
 
-    /**
-     * 套用挑戰模式格子變更（局部 DOM 更新）
-     */
     function applyPlayCellChange(r, c, newVal) {
       if (state.playerGrid[r][c] === newVal) return;
       state.playerGrid[r][c] = newVal;
 
-      const ans = state.currentPuzzle.grid[r][c];
-      if (state.liveErrorCheck && ((newVal === 1 && ans === 0) || (newVal === 2 && ans === 1))) {
-        sound.playError();
-      } else if (newVal === 1) {
-        sound.playFill();
-      } else if (newVal === 2) {
-        sound.playMarkX();
-      } else {
-        sound.playErase();
-      }
+      if (state.liveErrorCheck && isCellError(r, c, newVal)) sound.playError();
+      else if (newVal === 1) sound.playFill();
+      else if (newVal === 2) sound.playMarkX();
+      else sound.playErase();
 
       updateCellDOM(r, c);
       updateRowCluesDOM(r);
@@ -2045,9 +3344,6 @@
       checkVictoryCondition();
     }
 
-    /**
-     * 套用設計模式格子變更（局部 DOM 更新 + 水平/垂直對稱）
-     */
     function applyCreatorCellChange(r, c, newVal) {
       const rows = state.createRows;
       const cols = state.createCols;
@@ -2076,14 +3372,22 @@
 
       affectedRows.forEach(tr => updateRowCluesDOM(tr));
       affectedCols.forEach(tc => updateColCluesDOM(tc));
+      resetCreatorUniquenessBadge();
       validateCreatorGrid();
     }
 
     /* ==========================================================================
-       8. 進度統計、提示、計時器與過關判定
+       9. 進度統計、提示、計時器與過關判定（含多解收集判定）
        ========================================================================== */
     function updatePlayStats() {
       const p = state.currentPuzzle;
+      if (state.allSolutions.length > 1) {
+        const totalLabel = state.totalSolutionsCapped ? `${state.allSolutions.length}+` : `${state.allSolutions.length}`;
+        document.getElementById("progress-display").textContent =
+          `已收集：${state.foundSolutions.length}/${totalLabel} 解`;
+        return;
+      }
+
       let totalBlack = 0;
       let correctBlack = 0;
       for (let r = 0; r < p.rows; r++) {
@@ -2102,7 +3406,7 @@
       if (state.isSolved) return;
       const p = state.currentPuzzle;
 
-      // 只要所有橫列與直欄的連續黑格序列都完全符合提示數字即判定過關（兼容多解題目）
+      // 檢查所有橫列與直欄是否皆符合提示數字
       for (let r = 0; r < p.rows; r++) {
         const pClues = computeLineClues(state.playerGrid[r].map(v => (v === 1 ? 1 : 0)));
         const tClues = state.rowClues[r];
@@ -2116,7 +3420,31 @@
         if (pClues.length !== tClues.length || !pClues.every((v, i) => v === tClues[i])) return;
       }
 
-      // 過關！
+      // ---- 進入「多解挑戰收集判定」 ----
+      const isMulti = state.allSolutions.length > 1;
+      if (isMulti) {
+        const binaryGrid = state.playerGrid.map(row => row.map(v => (v === 1 ? 1 : 0)));
+        const key = gridToKey(binaryGrid);
+        const alreadyFound = state.foundSolutions.some(s => s.key === key);
+
+        if (alreadyFound) {
+          showToast("🔁 這組解答已經收集過囉！試著調整部分格子找出其他解法！");
+          return;
+        }
+
+        state.foundSolutions.push({ key, grid: binaryGrid });
+        renderMultiSolutionPanel();
+        updatePlayStats();
+
+        if (state.foundSolutions.length < state.allSolutions.length) {
+          sound.playCollectOne();
+          const remain = state.allSolutions.length - state.foundSolutions.length;
+          showToast(`🎉 成功收集第 ${state.foundSolutions.length} 組解！還剩 ${remain} 組，可直接微調格子繼續找！`);
+          return;
+        }
+      }
+
+      // ---- 全部完成過關！ ----
       state.isSolved = true;
       stopTimer();
       sound.playVictory();
@@ -2131,22 +3459,44 @@
       launchConfetti();
 
       const timeStr = formatTime(state.timerSeconds);
-      document.getElementById("victory-stats").innerHTML =
-        `您已完美解開「<strong>${p.title}</strong>」(${p.cols}×${p.rows})！<br>總計花費時間：<strong>${timeStr}</strong>`;
+      if (isMulti) {
+        document.getElementById("victory-title").textContent = "🏆 太神啦！全部解答收集完成！";
+        document.getElementById("victory-stats").innerHTML =
+          `您已完整找出「<strong>${p.title}</strong>」的全部 <strong>${state.foundSolutions.length} 組解答</strong>！<br>總計花費時間：<strong>${timeStr}</strong>`;
+      } else {
+        document.getElementById("victory-title").textContent = "太棒了！成功解開謎題！";
+        document.getElementById("victory-stats").innerHTML =
+          `您已完美解開「<strong>${p.title}</strong>」(${p.cols}×${p.rows})！<br>總計花費時間：<strong>${timeStr}</strong>`;
+      }
+
+      // 準備排行榜登錄表單
+      const nameInput = document.getElementById("victory-player-name");
+      const submitBtn = document.getElementById("btn-submit-score");
+      const feedbackEl = document.getElementById("victory-rank-feedback");
+      try {
+        const lastName = localStorage.getItem(STORAGE_KEY_PLAYER_NAME);
+        if (lastName) nameInput.value = lastName;
+      } catch (e) {}
+      submitBtn.disabled = false;
+      submitBtn.textContent = "登錄成績";
+      feedbackEl.textContent = "";
+
       setTimeout(() => {
         document.getElementById("modal-victory").classList.add("open");
+        nameInput.focus();
       }, 450);
     }
 
     function revealOneHint() {
       if (state.mode !== "play" || state.isSolved) return;
       const p = state.currentPuzzle;
+      const targetGrid = getTargetSolutionForAssist();
       const wrongBlack = [];
       const missingBlack = [];
 
       for (let r = 0; r < p.rows; r++) {
         for (let c = 0; c < p.cols; c++) {
-          const ans = p.grid[r][c];
+          const ans = targetGrid[r][c];
           const cur = state.playerGrid[r][c];
           if (ans === 0 && cur === 1) wrongBlack.push([r, c, ans]);
           else if (ans === 1 && cur !== 1) missingBlack.push([r, c, ans]);
@@ -2155,7 +3505,7 @@
 
       const pool = wrongBlack.length > 0 ? wrongBlack : missingBlack;
       if (pool.length === 0) {
-        showToast("✨ 所有黑格都已經正確塗滿囉！");
+        showToast("✨ 目前已符合一組解答囉！");
         return;
       }
 
@@ -2206,7 +3556,7 @@
     }
 
     /* ==========================================================================
-       9. 自訂設計模式輔助功能 + 上傳圖片轉數織 (Image to Nonogram)
+       10. 自訂設計模式：唯一解檢驗、隨機生成與上傳圖片轉題目
        ========================================================================== */
     function validateCreatorGrid() {
       const statusEl = document.getElementById("creator-status");
@@ -2226,30 +3576,177 @@
       return true;
     }
 
+    /**
+     * 執行「唯一解邏輯檢驗」並呈現詳細報告與反例對照
+     */
+    function runUniquenessCheck() {
+      if (!validateCreatorGrid()) {
+        showToast("⚠️ 請先在畫布上繪製圖案再進行唯一解檢驗！");
+        return;
+      }
+
+      const rows = state.createRows;
+      const cols = state.createCols;
+      const origGrid = state.createGrid.map(r => r.slice());
+      const origKey = gridToKey(origGrid);
+
+      const rowClues = origGrid.map(row => computeLineClues(row));
+      const colClues = [];
+      for (let c = 0; c < cols; c++) {
+        const colArr = [];
+        for (let r = 0; r < rows; r++) colArr.push(origGrid[r][c]);
+        colClues.push(computeLineClues(colArr));
+      }
+
+      const res = solveNonogram(rowClues, colClues, 20, 20000, 1800);
+      const altSolutions = res.solutions.filter(g => gridToKey(g) !== origKey);
+
+      state.uniqueCheckResult = { res, origGrid, altSolutions };
+      state.altSolIndex = 0;
+
+      const badge = document.getElementById("creator-unique-badge");
+      const banner = document.getElementById("unique-result-banner");
+      const detail = document.getElementById("unique-detail-text");
+      const compareArea = document.getElementById("unique-compare-area");
+      const playMultiBtn = document.getElementById("btn-unique-play-multi");
+
+      badge.style.display = "inline-flex";
+
+      if (altSolutions.length === 0 && !res.timedOut) {
+        // 唯一解！
+        sound.playHint();
+        badge.textContent = "✅ 唯一解";
+        badge.style.color = "#059669";
+        banner.className = "unique-banner ok";
+        banner.textContent = "✅ 檢驗通過！此圖案轉換為數織題目後保證為「唯一解」！";
+
+        const logicDesc = res.nodes === 1
+          ? "本題可完全透過單純的「行列邏輯推理」一步步解出，不需猜測或試誤，非常適合作為課堂正式題目！"
+          : `本題雖然只有唯一解，但解題過程中需要較深層的假設推論（搜尋節點數：${res.nodes}），屬於進階挑戰難度！`;
+        detail.textContent = logicDesc;
+        compareArea.style.display = "none";
+        playMultiBtn.style.display = "none";
+      } else if (altSolutions.length > 0) {
+        // 多重解！
+        sound.playError();
+        const totalCount = res.solutions.length;
+        const countLabel = res.capped ? `${totalCount}+` : `${totalCount}`;
+        badge.textContent = `⚠️ 非唯一解 (${countLabel} 組)`;
+        badge.style.color = "#d97706";
+
+        banner.className = "unique-banner multi";
+        banner.textContent = `⚠️ 此設計並非唯一解！相同的數字提示共對應 ${countLabel} 組不同解答。`;
+        detail.innerHTML =
+          `下方左側為您的原始設計，右側為系統找到的另一組符合相同提示的解答。<strong>橘色高亮的格子即為造成多解的「歧義格」</strong>，建議微調其中 1～2 格打破對稱後再重新檢驗，或直接作為「多解挑戰題」讓學生找出所有解！`;
+
+        compareArea.style.display = "block";
+        playMultiBtn.style.display = "inline-flex";
+        renderUniquenessComparison();
+      } else {
+        // 逾時未能窮舉
+        badge.textContent = "⏳ 複雜度過高（逾時）";
+        badge.style.color = "#dc2626";
+        banner.className = "unique-banner warn";
+        banner.textContent = "⏳ 題目尺寸較大且分支過多，未能在時限內完成窮舉驗證。";
+        detail.textContent = "目前尚未發現反例，但建議縮小尺寸或增加較長的連續黑格區塊，讓題目更具備可推理性。";
+        compareArea.style.display = "none";
+        playMultiBtn.style.display = "none";
+      }
+
+      document.getElementById("modal-uniqueness").classList.add("open");
+    }
+
+    function renderUniquenessComparison() {
+      const info = state.uniqueCheckResult;
+      if (!info || info.altSolutions.length === 0) return;
+
+      const alt = info.altSolutions[state.altSolIndex];
+      drawGridToCanvas(document.getElementById("unique-canvas-orig"), info.origGrid, "#1e293b", alt, 210);
+      drawGridToCanvas(document.getElementById("unique-canvas-alt"), alt, "#2563eb", info.origGrid, 210);
+
+      document.getElementById("unique-alt-label").textContent =
+        `反例解答 #${state.altSolIndex + 1}（橘框為差異處）`;
+      document.getElementById("alt-sol-index-label").textContent =
+        `反例 ${state.altSolIndex + 1} / ${info.altSolutions.length}`;
+      document.getElementById("alt-sol-switcher").style.display =
+        info.altSolutions.length > 1 ? "flex" : "none";
+    }
+
     function generateRandomPattern() {
       const rows = state.createRows;
       const cols = state.createCols;
-      const useSym = state.mirrorH;
-      const density = 0.52;
+      const useH = state.mirrorH;
+      const useV = state.mirrorV;
 
-      const grid = Array.from({ length: rows }, () => Array(cols).fill(0));
+      const modeSel = document.getElementById("random-density-select").value;
+      let targetPct;
+      let isRandomDensity = false;
+
+      if (modeSel === "random") {
+        targetPct = Math.floor(Math.random() * 41) + 30; // 30% ~ 70% 隨機
+        isRandomDensity = true;
+      } else if (modeSel === "custom") {
+        const raw = parseInt(document.getElementById("random-density-custom").value, 10);
+        targetPct = Math.max(10, Math.min(90, isNaN(raw) ? 50 : raw));
+        document.getElementById("random-density-custom").value = targetPct;
+      } else {
+        targetPct = parseInt(modeSel, 10) || 50;
+      }
+
+      // 建立對稱群組（若啟用水平/垂直對稱則以對稱群組為單位，使塗黑率精準貼近設定值）
+      const visited = Array.from({ length: rows }, () => Array(cols).fill(false));
+      const groups = [];
       for (let r = 0; r < rows; r++) {
-        const maxC = useSym ? Math.ceil(cols / 2) : cols;
-        for (let c = 0; c < maxC; c++) {
-          const val = Math.random() < density ? 1 : 0;
-          grid[r][c] = val;
-          if (useSym) grid[r][cols - 1 - c] = val;
+        for (let c = 0; c < cols; c++) {
+          if (visited[r][c]) continue;
+          const pts = [[r, c]];
+          if (useH) pts.push([r, cols - 1 - c]);
+          if (useV) pts.push([rows - 1 - r, c]);
+          if (useH && useV) pts.push([rows - 1 - r, cols - 1 - c]);
+
+          const uniquePts = [];
+          for (const [pr, pc] of pts) {
+            if (!visited[pr][pc]) {
+              visited[pr][pc] = true;
+              uniquePts.push([pr, pc]);
+            }
+          }
+          groups.push(uniquePts);
         }
       }
+
+      // Fisher-Yates 洗牌後依目標塗黑格數填黑
+      for (let i = groups.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [groups[i], groups[j]] = [groups[j], groups[i]];
+      }
+
+      const totalCells = rows * cols;
+      const targetFilled = Math.max(1, Math.min(totalCells - 1, Math.round((totalCells * targetPct) / 100)));
+      const grid = Array.from({ length: rows }, () => Array(cols).fill(0));
+      let filledSoFar = 0;
+
+      for (const grp of groups) {
+        if (filledSoFar >= targetFilled) break;
+        // 若加上整個群組不會離目標太遠（或目前仍是空的）就填入
+        if (filledSoFar === 0 || Math.abs((filledSoFar + grp.length) - targetFilled) <= Math.abs(filledSoFar - targetFilled)) {
+          for (const [gr, gc] of grp) grid[gr][gc] = 1;
+          filledSoFar += grp.length;
+        }
+      }
+
+      const actualPct = Math.round((filledSoFar / totalCells) * 100);
       state.createGrid = grid;
+      resetCreatorUniquenessBadge();
       sound.playHint();
       renderBoard();
       validateCreatorGrid();
-      showToast("🎲 已隨機生成新圖案！");
+      const modeDesc = isRandomDensity ? `隨機塗黑率 ${actualPct}%` : `目標 ${targetPct}%（實際 ${actualPct}%）`;
+      showToast(`🎲 已依 ${modeDesc} 生成新圖案！可點「🔎 檢驗唯一解」確認`);
     }
 
     function buildPuzzleFromCreator() {
-      const titleInput = document.getElementById("create-title").value.trim() || "自訂創意關卡";
+      const titleInput = document.getElementById("create-title").value.trim() || "題目自訂";
       return {
         id: "custom_" + Date.now(),
         category: "我的自訂題庫",
@@ -2262,31 +3759,16 @@
     }
 
     /* --- 圖片轉數織模組 --- */
-    const imgImportState = {
-      image: null,
-      fileName: "",
-      grid: [],
-      cols: 15,
-      rows: 15
-    };
+    const imgImportState = { image: null, fileName: "", grid: [], cols: 15, rows: 15 };
 
-    /**
-     * Otsu 大津法自動計算最佳二值化灰階門檻
-     */
     function computeOtsuThreshold(grayValues) {
       const hist = new Array(256).fill(0);
-      for (let i = 0; i < grayValues.length; i++) {
-        hist[Math.round(grayValues[i])]++;
-      }
+      for (let i = 0; i < grayValues.length; i++) hist[Math.round(grayValues[i])]++;
       const total = grayValues.length;
       let sum = 0;
       for (let t = 0; t < 256; t++) sum += t * hist[t];
 
-      let sumB = 0;
-      let wB = 0;
-      let maxVar = 0;
-      let threshold = 128;
-
+      let sumB = 0, wB = 0, maxVar = 0, threshold = 128;
       for (let t = 0; t < 256; t++) {
         wB += hist[t];
         if (wB === 0) continue;
@@ -2304,9 +3786,6 @@
       return Math.max(20, Math.min(235, threshold));
     }
 
-    /**
-     * 依原圖長寬比自動計算預設版面尺寸（限制 5~25）
-     */
     function computeAutoBoardSize(imgW, imgH, maxDim) {
       let cols, rows;
       if (imgW >= imgH) {
@@ -2316,14 +3795,16 @@
         rows = maxDim;
         cols = Math.round((imgW / imgH) * maxDim);
       }
-      cols = Math.max(5, Math.min(25, cols));
-      rows = Math.max(5, Math.min(25, rows));
-      return { cols, rows };
+      return {
+        cols: Math.max(4, Math.min(100, cols)),
+        rows: Math.max(4, Math.min(100, rows))
+      };
     }
 
     function handleUploadedImageFile(file) {
-      if (!file || !file.type.startsWith("image/")) {
-        showToast("⚠️ 請選擇有效的圖片檔案（PNG、JPG、WebP、SVG）");
+      const validExt = /\.(png|jpe?g|gif|webp|bmp|svg)$/i;
+      if (!file || (!file.type.startsWith("image/") && !validExt.test(file.name || ""))) {
+        showToast("⚠️ 請選擇有效的圖片檔案（PNG、JPG、WebP、GIF、BMP、SVG）");
         return;
       }
 
@@ -2331,8 +3812,12 @@
       reader.onload = ev => {
         const img = new Image();
         img.onload = () => {
+          const natW = img.naturalWidth || img.width || 256;
+          const natH = img.naturalHeight || img.height || 256;
           imgImportState.image = img;
-          imgImportState.fileName = file.name.replace(/\.[^/.]+$/, "").slice(0, 18) || "圖片數織";
+          imgImportState.naturalWidth = natW;
+          imgImportState.naturalHeight = natH;
+          imgImportState.fileName = (file.name || "貼上圖片").replace(/\.[^/.]+$/, "").slice(0, 18) || "圖片數織";
 
           document.getElementById("img-orig-preview").src = ev.target.result;
           document.getElementById("img-dropzone").style.display = "none";
@@ -2340,21 +3825,22 @@
           document.getElementById("btn-img-reselect").style.display = "inline-flex";
           document.getElementById("btn-img-apply").disabled = false;
 
-          // 自動依原圖比例調整預設版面大小
           const maxDim = parseInt(document.getElementById("img-max-dim").value, 10) || 15;
-          const autoSize = computeAutoBoardSize(img.naturalWidth, img.naturalHeight, maxDim);
+          const autoSize = computeAutoBoardSize(natW, natH, maxDim);
           document.getElementById("img-cols").value = autoSize.cols;
           document.getElementById("img-rows").value = autoSize.rows;
 
-          // 採樣計算 Otsu 建議門檻值
+          // 採樣計算 Otsu 建議門檻值（以 64×64 採樣確保大圖與小圖皆準確）
           const sampleCanvas = document.createElement("canvas");
-          sampleCanvas.width = autoSize.cols;
-          sampleCanvas.height = autoSize.rows;
+          sampleCanvas.width = 64;
+          sampleCanvas.height = 64;
           const sCtx = sampleCanvas.getContext("2d");
           sCtx.fillStyle = "#ffffff";
-          sCtx.fillRect(0, 0, autoSize.cols, autoSize.rows);
-          sCtx.drawImage(img, 0, 0, autoSize.cols, autoSize.rows);
-          const data = sCtx.getImageData(0, 0, autoSize.cols, autoSize.rows).data;
+          sCtx.fillRect(0, 0, 64, 64);
+          const sc = Math.min(60 / natW, 60 / natH);
+          const sw = natW * sc, sh = natH * sc;
+          sCtx.drawImage(img, (64 - sw) / 2, (64 - sh) / 2, sw, sh);
+          const data = sCtx.getImageData(0, 0, 64, 64).data;
           const grays = [];
           for (let i = 0; i < data.length; i += 4) {
             grays.push(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
@@ -2365,48 +3851,73 @@
           document.getElementById("img-invert").checked = false;
 
           updateImageToNonogramPreview();
+          document.getElementById("img-file-input").value = "";
         };
-        img.onerror = () => showToast("❌ 圖片讀取失敗，請嘗試其他圖片格式");
+        img.onerror = () => {
+          document.getElementById("img-file-input").value = "";
+          showToast("❌ 圖片讀取失敗，請嘗試轉換為 PNG 或 JPG 格式");
+        };
         img.src = ev.target.result;
       };
+      reader.onerror = () => showToast("❌ 無法讀取此檔案");
       reader.readAsDataURL(file);
     }
 
     function updateImageToNonogramPreview() {
       if (!imgImportState.image) return;
 
-      let cols = parseInt(document.getElementById("img-cols").value, 10) || 15;
-      let rows = parseInt(document.getElementById("img-rows").value, 10) || 15;
-      cols = Math.max(5, Math.min(25, cols));
-      rows = Math.max(5, Math.min(25, rows));
+      const cols = Math.max(4, Math.min(100, parseInt(document.getElementById("img-cols").value, 10) || 15));
+      const rows = Math.max(4, Math.min(100, parseInt(document.getElementById("img-rows").value, 10) || 15));
       imgImportState.cols = cols;
       imgImportState.rows = rows;
 
       const threshold = parseInt(document.getElementById("img-threshold").value, 10);
+      const paddingCells = parseInt(document.getElementById("img-padding").value, 10) || 0;
       const invert = document.getElementById("img-invert").checked;
       document.getElementById("img-threshold-val").textContent = threshold;
 
-      // 縮放採樣（先鋪白底避免透明 PNG 變全黑）
+      const img = imgImportState.image;
+      const natW = imgImportState.naturalWidth || img.naturalWidth || 256;
+      const natH = imgImportState.naturalHeight || img.naturalHeight || 256;
+
+      // 2x/4x 超採樣平均灰階 + 保留安全留白 + 等比例置中（不扭曲原圖）
+      const safePad = Math.min(paddingCells, Math.floor((Math.min(cols, rows) - 2) / 2));
+      const innerW = Math.max(1, cols - safePad * 2);
+      const innerH = Math.max(1, rows - safePad * 2);
+
+      const ss = cols > 50 || rows > 50 ? 2 : 4;
       const off = document.createElement("canvas");
-      off.width = cols;
-      off.height = rows;
+      off.width = cols * ss;
+      off.height = rows * ss;
       const oCtx = off.getContext("2d");
       oCtx.fillStyle = "#ffffff";
-      oCtx.fillRect(0, 0, cols, rows);
+      oCtx.fillRect(0, 0, off.width, off.height);
       oCtx.imageSmoothingEnabled = true;
       oCtx.imageSmoothingQuality = "high";
-      oCtx.drawImage(imgImportState.image, 0, 0, cols, rows);
 
-      const imgData = oCtx.getImageData(0, 0, cols, rows).data;
+      const fitScale = Math.min((innerW * ss) / natW, (innerH * ss) / natH);
+      const drawW = natW * fitScale;
+      const drawH = natH * fitScale;
+      oCtx.drawImage(img, (off.width - drawW) / 2, (off.height - drawH) / 2, drawW, drawH);
+
+      const imgData = oCtx.getImageData(0, 0, off.width, off.height).data;
       const grid = [];
       let blackCount = 0;
 
       for (let r = 0; r < rows; r++) {
         const rowArr = [];
         for (let c = 0; c < cols; c++) {
-          const idx = (r * cols + c) * 4;
-          const lum = 0.299 * imgData[idx] + 0.587 * imgData[idx + 1] + 0.114 * imgData[idx + 2];
-          let isBlack = lum < threshold;
+          let lumSum = 0;
+          for (let dy = 0; dy < ss; dy++) {
+            for (let dx = 0; dx < ss; dx++) {
+              const px = c * ss + dx;
+              const py = r * ss + dy;
+              const idx = (py * off.width + px) * 4;
+              lumSum += 0.299 * imgData[idx] + 0.587 * imgData[idx + 1] + 0.114 * imgData[idx + 2];
+            }
+          }
+          const avgLum = lumSum / (ss * ss);
+          let isBlack = avgLum < threshold;
           if (invert) isBlack = !isBlack;
           rowArr.push(isBlack ? 1 : 0);
           if (isBlack) blackCount++;
@@ -2415,32 +3926,11 @@
       }
       imgImportState.grid = grid;
 
-      // 繪製像素預覽畫布
-      const preview = document.getElementById("img-pixel-preview");
-      const maxPreviewPx = 210;
-      const cellPx = Math.max(6, Math.floor(maxPreviewPx / Math.max(cols, rows)));
-      preview.width = cols * cellPx;
-      preview.height = rows * cellPx;
-      const pCtx = preview.getContext("2d");
-
-      pCtx.fillStyle = "#ffffff";
-      pCtx.fillRect(0, 0, preview.width, preview.height);
-
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          if (grid[r][c] === 1) {
-            pCtx.fillStyle = "#1e293b";
-            pCtx.fillRect(c * cellPx, r * cellPx, cellPx, cellPx);
-          }
-          pCtx.strokeStyle = "#cbd5e1";
-          pCtx.lineWidth = 0.6;
-          pCtx.strokeRect(c * cellPx, r * cellPx, cellPx, cellPx);
-        }
-      }
-
+      drawGridToCanvas(document.getElementById("img-pixel-preview"), grid, "#1e293b", null, 240);
       const pct = Math.round((blackCount / (rows * cols)) * 100);
       document.getElementById("img-result-label").textContent = `數織預覽（${cols}×${rows}）`;
       document.getElementById("img-fill-stat").textContent = `塗黑率：${pct}%`;
+      document.getElementById("btn-img-apply").disabled = blackCount === 0;
     }
 
     function resetImageImportModal() {
@@ -2453,8 +3943,761 @@
       document.getElementById("btn-img-apply").disabled = true;
     }
 
+    /* --- 文字／符號轉數織模組 (Text & Symbol to Nonogram) --- */
+    const txtImportState = {
+      text: "★",
+      grid: [],
+      cols: 15,
+      rows: 15
+    };
+
+    function getTextImportFontStack(styleKey) {
+      if (styleKey === "serif") {
+        return '"Noto Serif TC", "PMingLiU", "MingLiU", Georgia, "Times New Roman", serif';
+      }
+      if (styleKey === "kai") {
+        return '"DFKai-SB", "BiauKai", "Kaiti TC", "KaiTi", "STKaiti", serif';
+      }
+      if (styleKey === "mono") {
+        return 'ui-monospace, "Cascadia Mono", Consolas, "Noto Sans Mono CJK TC", monospace';
+      }
+      return '"Noto Sans TC", "Microsoft JhengHei", "PingFang TC", -apple-system, BlinkMacSystemFont, sans-serif';
+    }
+
+    /**
+     * 將輸入的文字／符號渲染到高解析畫布、自動裁切緊密外框，再縮放二值化為數織題目預覽
+     */
+    function updateTextToNonogramPreview(recalcAutoSize = false) {
+      const rawText = document.getElementById("txt-source-input").value.trim();
+      txtImportState.text = rawText;
+
+      const origCanvas = document.getElementById("txt-orig-preview");
+      const origCtx = origCanvas.getContext("2d");
+      const pixelCanvas = document.getElementById("txt-pixel-preview");
+      const applyBtn = document.getElementById("btn-txt-apply");
+
+      if (!rawText) {
+        origCtx.fillStyle = "#ffffff";
+        origCtx.fillRect(0, 0, origCanvas.width, origCanvas.height);
+        const pCtx = pixelCanvas.getContext("2d");
+        pCtx.fillStyle = "#ffffff";
+        pCtx.fillRect(0, 0, pixelCanvas.width, pixelCanvas.height);
+        txtImportState.grid = [];
+        document.getElementById("txt-fill-stat").textContent = "塗黑率：0%";
+        applyBtn.disabled = true;
+        return;
+      }
+
+      const fontStyle = document.getElementById("txt-font-family").value;
+      const isBold = document.getElementById("txt-bold").checked;
+      const threshold = parseInt(document.getElementById("txt-threshold").value, 10) || 155;
+      const paddingCells = parseInt(document.getElementById("txt-padding").value, 10) || 0;
+      const invert = document.getElementById("txt-invert").checked;
+      const autoRatio = document.getElementById("txt-auto-ratio").checked;
+      document.getElementById("txt-threshold-val").textContent = threshold;
+
+      // 1. 先在大型高解析畫布渲染文字並量測真實墨跡外框 (tight bounding box)
+      const hiH = 260;
+      const hiW = Math.max(260, rawText.length * 190 + 120);
+      const hiCanvas = document.createElement("canvas");
+      hiCanvas.width = hiW;
+      hiCanvas.height = hiH;
+      const hCtx = hiCanvas.getContext("2d");
+
+      hCtx.fillStyle = "#ffffff";
+      hCtx.fillRect(0, 0, hiW, hiH);
+      hCtx.fillStyle = "#000000";
+      hCtx.textAlign = "center";
+      hCtx.textBaseline = "middle";
+      const fontWeight = isBold ? "800" : "400";
+      const fontSize = 175;
+      hCtx.font = `${fontWeight} ${fontSize}px ${getTextImportFontStack(fontStyle)}`;
+      hCtx.fillText(rawText, hiW / 2, hiH / 2 + 4);
+
+      const hiData = hCtx.getImageData(0, 0, hiW, hiH).data;
+      let minX = hiW, minY = hiH, maxX = -1, maxY = -1;
+      for (let y = 0; y < hiH; y++) {
+        for (let x = 0; x < hiW; x++) {
+          const i = (y * hiW + x) * 4;
+          const lum = 0.299 * hiData[i] + 0.587 * hiData[i + 1] + 0.114 * hiData[i + 2];
+          if (lum < 245) {
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+          }
+        }
+      }
+
+      if (maxX < minX || maxY < minY) {
+        applyBtn.disabled = true;
+        return;
+      }
+
+      const cropW = maxX - minX + 1;
+      const cropH = maxY - minY + 1;
+
+      // 2. 依字形比例自動計算推薦格數（當勾選自動比例或切換文字/基準時）
+      if (recalcAutoSize && autoRatio) {
+        const maxDim = parseInt(document.getElementById("txt-max-dim").value, 10) || 15;
+        // 考量留白邊距後估算合理格數，避免過扁或過瘦
+        const effW = cropW;
+        const effH = cropH;
+        const autoSize = computeAutoBoardSize(effW, effH, maxDim);
+        document.getElementById("txt-cols").value = Math.max(5, autoSize.cols);
+        document.getElementById("txt-rows").value = Math.max(5, autoSize.rows);
+      }
+
+      const cols = Math.max(4, Math.min(100, parseInt(document.getElementById("txt-cols").value, 10) || 15));
+      const rows = Math.max(4, Math.min(100, parseInt(document.getElementById("txt-rows").value, 10) || 15));
+      txtImportState.cols = cols;
+      txtImportState.rows = rows;
+
+      // 3. 在左側顯示裁切置中後的原圖預覽
+      origCanvas.width = 210;
+      origCanvas.height = 210;
+      origCtx.fillStyle = "#ffffff";
+      origCtx.fillRect(0, 0, 210, 210);
+      const previewScale = Math.min(180 / cropW, 180 / cropH);
+      const pw = cropW * previewScale;
+      const ph = cropH * previewScale;
+      origCtx.drawImage(hiCanvas, minX, minY, cropW, cropH, (210 - pw) / 2, (210 - ph) / 2, pw, ph);
+
+      // 4. 縮放繪製至 cols×rows 採樣畫布（保留安全邊距並等比例置中）
+      const safePad = Math.min(paddingCells, Math.floor((Math.min(cols, rows) - 2) / 2));
+      const innerW = Math.max(1, cols - safePad * 2);
+      const innerH = Math.max(1, rows - safePad * 2);
+
+      // 以 4x 超採樣平均灰階，讓細筆畫在中英文縮小時較不容易斷裂
+      const ss = 4;
+      const sampleCanvas = document.createElement("canvas");
+      sampleCanvas.width = cols * ss;
+      sampleCanvas.height = rows * ss;
+      const sCtx = sampleCanvas.getContext("2d");
+      sCtx.fillStyle = "#ffffff";
+      sCtx.fillRect(0, 0, sampleCanvas.width, sampleCanvas.height);
+      sCtx.imageSmoothingEnabled = true;
+      sCtx.imageSmoothingQuality = "high";
+
+      const fitScale = Math.min((innerW * ss) / cropW, (innerH * ss) / cropH);
+      const drawW = cropW * fitScale;
+      const drawH = cropH * fitScale;
+      const drawX = (sampleCanvas.width - drawW) / 2;
+      const drawY = (sampleCanvas.height - drawH) / 2;
+      sCtx.drawImage(hiCanvas, minX, minY, cropW, cropH, drawX, drawY, drawW, drawH);
+
+      const sData = sCtx.getImageData(0, 0, sampleCanvas.width, sampleCanvas.height).data;
+      const grid = [];
+      let blackCount = 0;
+
+      for (let r = 0; r < rows; r++) {
+        const rowArr = [];
+        for (let c = 0; c < cols; c++) {
+          let lumSum = 0;
+          for (let dy = 0; dy < ss; dy++) {
+            for (let dx = 0; dx < ss; dx++) {
+              const px = c * ss + dx;
+              const py = r * ss + dy;
+              const idx = (py * sampleCanvas.width + px) * 4;
+              lumSum += 0.299 * sData[idx] + 0.587 * sData[idx + 1] + 0.114 * sData[idx + 2];
+            }
+          }
+          const avgLum = lumSum / (ss * ss);
+          let isBlack = avgLum < threshold;
+          if (invert) isBlack = !isBlack;
+          rowArr.push(isBlack ? 1 : 0);
+          if (isBlack) blackCount++;
+        }
+        grid.push(rowArr);
+      }
+
+      txtImportState.grid = grid;
+      drawGridToCanvas(pixelCanvas, grid, "#1e293b", null, 210);
+
+      const pct = Math.round((blackCount / (rows * cols)) * 100);
+      document.getElementById("txt-result-label").textContent = `數織題目預覽（${cols}×${rows}）`;
+      document.getElementById("txt-fill-stat").textContent = `塗黑率：${pct}%`;
+      applyBtn.disabled = blackCount === 0;
+    }
+
+    /* --- 名詞協助繪圖模組 (Offline Curated SVG + Online Iconify CORS SVG Search) --- */
+    const LOCAL_VECTOR_LIBRARY = [
+      {
+        name: "經典愛心",
+        keywords: ["愛心", "心", "心形", "愛", "heart", "love"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="#000" d="M50 88 C45 84 12 60 12 34 C12 20 23 10 35 10 C43 10 48 15 50 20 C52 15 57 10 65 10 C77 10 88 20 88 34 C88 60 55 84 50 88 Z"/></svg>`
+      },
+      {
+        name: "空心愛心",
+        keywords: ["愛心", "心", "心形", "heart"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="none" stroke="#000" stroke-width="11" stroke-linejoin="round" d="M50 84 C45 80 15 58 15 35 C15 22 25 14 36 14 C43 14 48 18 50 23 C52 18 57 14 64 14 C75 14 85 22 85 35 C85 58 55 80 50 84 Z"/></svg>`
+      },
+      {
+        name: "守護天使",
+        keywords: ["天使", "翅膀", "angel", "cherub"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <ellipse cx="50" cy="11" rx="14" ry="4" fill="none" stroke="#000" stroke-width="3.5"/>
+          <circle cx="50" cy="27" r="10.5" fill="#000"/>
+          <path fill="#000" d="M39 40 C22 28 8 34 6 50 C14 47 20 48 26 52 C14 55 10 62 12 69 C21 66 29 63 36 58 L28 90 L72 90 L64 58 C71 63 79 66 88 69 C90 62 86 55 74 52 C80 48 86 47 94 50 C92 34 78 28 61 40 Z"/>
+        </svg>`
+      },
+      {
+        name: "台灣本島（實心）",
+        keywords: ["台灣", "臺灣", "寶島", "taiwan", "formosa"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" width="174" height="256" viewBox="10 0 68 100">
+          <path fill="#000" d="M 62.3 6.0 L 64.7 8.1 L 67.1 9.9 L 69.7 10.7 L 73.2 13.5 L 71.3 14.8 L 69.4 17.6 L 69.2 21.0 L 70.2 24.4 L 69.0 28.3 L 67.3 31.9 L 65.2 35.5 L 64.5 39.6 L 63.3 43.5 L 62.3 48.7 L 60.9 53.9 L 59.5 59.8 L 58.3 63.5 L 55.5 68.1 L 53.1 72.0 L 50.0 75.4 L 48.3 80.5 L 46.9 84.9 L 46.9 90.1 L 46.0 94.0 L 45.0 93.5 L 44.3 92.4 L 43.1 93.5 L 42.6 91.4 L 41.5 86.2 L 38.1 81.1 L 34.8 78.0 L 32.4 75.4 L 31.0 71.2 L 29.1 66.6 L 26.8 62.9 L 27.5 58.3 L 28.7 53.9 L 29.4 48.7 L 31.0 43.5 L 34.8 39.1 L 37.7 34.0 L 41.0 28.8 L 43.8 23.6 L 47.6 18.9 L 50.7 14.3 L 54.7 11.2 L 59.2 9.1 L 60.4 7.3 Z"/>
+          <circle cx="15.8" cy="50.8" r="2.2" fill="#000"/>
+          <circle cx="60.9" cy="74.3" r="1.7" fill="#000"/>
+          <circle cx="62.6" cy="90.1" r="1.9" fill="#000"/>
+        </svg>`
+      },
+      {
+        name: "台灣輪廓（空心）",
+        keywords: ["台灣", "臺灣", "寶島", "taiwan", "formosa"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" width="174" height="256" viewBox="10 0 68 100">
+          <path fill="none" stroke="#000" stroke-width="4.2" stroke-linejoin="round" d="M 62.3 6.0 L 64.7 8.1 L 67.1 9.9 L 69.7 10.7 L 73.2 13.5 L 71.3 14.8 L 69.4 17.6 L 69.2 21.0 L 70.2 24.4 L 69.0 28.3 L 67.3 31.9 L 65.2 35.5 L 64.5 39.6 L 63.3 43.5 L 62.3 48.7 L 60.9 53.9 L 59.5 59.8 L 58.3 63.5 L 55.5 68.1 L 53.1 72.0 L 50.0 75.4 L 48.3 80.5 L 46.9 84.9 L 46.9 90.1 L 46.0 94.0 L 45.0 93.5 L 44.3 92.4 L 43.1 93.5 L 42.6 91.4 L 41.5 86.2 L 38.1 81.1 L 34.8 78.0 L 32.4 75.4 L 31.0 71.2 L 29.1 66.6 L 26.8 62.9 L 27.5 58.3 L 28.7 53.9 L 29.4 48.7 L 31.0 43.5 L 34.8 39.1 L 37.7 34.0 L 41.0 28.8 L 43.8 23.6 L 47.6 18.9 L 50.7 14.3 L 54.7 11.2 L 59.2 9.1 L 60.4 7.3 Z"/>
+          <circle cx="15.8" cy="50.8" r="2.2" fill="#000"/>
+          <circle cx="60.9" cy="74.3" r="1.7" fill="#000"/>
+          <circle cx="62.6" cy="90.1" r="1.9" fill="#000"/>
+        </svg>`
+      },
+      {
+        name: "太空飛碟 UFO",
+        keywords: ["ufo", "飛碟", "幽浮", "外星人", "飛船"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 100 100">
+          <path fill="#000" d="M30 44 C30 26 70 26 70 44 Z"/>
+          <ellipse cx="50" cy="49" rx="42" ry="13" fill="#000"/>
+          <circle cx="28" cy="49" r="3.8" fill="#fff"/>
+          <circle cx="50" cy="51" r="3.8" fill="#fff"/>
+          <circle cx="72" cy="49" r="3.8" fill="#fff"/>
+          <polygon fill="#000" opacity="0.75" points="38,63 62,63 74,90 26,90"/>
+        </svg>`
+      },
+      {
+        name: "可愛貓咪",
+        keywords: ["貓", "貓咪", "小貓", "cat", "kitty"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <path fill="#000" d="M22 44 L18 14 L40 28 C46 26 54 26 60 28 L82 14 L78 44 C84 52 85 65 78 75 C70 86 30 86 22 75 C15 65 16 52 22 44 Z"/>
+          <circle cx="37" cy="52" r="5" fill="#fff"/>
+          <circle cx="63" cy="52" r="5" fill="#fff"/>
+          <polygon points="50,60 45,66 55,66" fill="#fff"/>
+        </svg>`
+      },
+      {
+        name: "展翅蝴蝶",
+        keywords: ["蝴蝶", "蝶", "butterfly"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <path fill="#000" d="M47 34 C38 14 10 12 8 34 C7 48 22 54 34 54 C18 58 14 76 26 84 C36 90 46 78 47 64 L47 74 C47 78 53 78 53 74 L53 64 C54 78 64 90 74 84 C86 76 82 58 66 54 C78 54 93 48 92 34 C90 12 62 14 53 34 L53 26 C53 22 47 22 47 26 Z"/>
+          <path stroke="#000" stroke-width="3" fill="none" stroke-linecap="round" d="M48 26 Q42 14 36 12 M52 26 Q58 14 64 12"/>
+        </svg>`
+      },
+      {
+        name: "小恐龍",
+        keywords: ["恐龍", "暴龍", "dinosaur", "dino"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <path fill="#000" d="M52 14 L82 14 C88 14 90 20 90 26 L90 34 L70 34 L70 40 L80 40 L80 48 L66 48 L66 64 C66 72 60 76 54 76 L54 90 L44 90 L44 76 L34 76 L34 90 L24 90 L24 72 C14 70 8 62 8 52 L16 52 C18 58 22 60 28 58 L38 46 L46 28 C46 20 48 14 52 14 Z"/>
+          <circle cx="62" cy="22" r="3.5" fill="#fff"/>
+        </svg>`
+      },
+      {
+        name: "太空火箭",
+        keywords: ["火箭", "太空", "飛船", "rocket", "space"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <path fill="#000" d="M50 8 C64 20 68 40 68 62 L82 76 L76 82 L64 74 L36 74 L24 82 L18 76 L32 62 C32 40 36 20 50 8 Z"/>
+          <circle cx="50" cy="40" r="8" fill="#fff"/>
+          <path fill="#000" d="M42 78 L50 94 L58 78 Z"/>
+        </svg>`
+      },
+      {
+        name: "童話城堡",
+        keywords: ["城堡", "皇宮", "堡壘", "castle"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <path fill="#000" d="M12 90 L12 36 L20 36 L20 44 L28 44 L28 36 L36 36 L36 52 L42 52 L42 26 L50 12 L58 26 L58 52 L64 52 L64 36 L72 36 L72 44 L80 44 L80 36 L88 36 L88 90 L60 90 L60 72 C60 64 40 64 40 72 L40 90 Z"/>
+        </svg>`
+      },
+      {
+        name: "五瓣櫻花",
+        keywords: ["櫻花", "花", "花朵", "sakura", "flower", "blossom"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <g fill="#000" transform="translate(50,50)">
+            <path d="M0 -8 C-14 -16 -16 -38 -4 -44 L0 -36 L4 -44 C16 -38 14 -16 0 -8 Z"/>
+            <path d="M0 -8 C-14 -16 -16 -38 -4 -44 L0 -36 L4 -44 C16 -38 14 -16 0 -8 Z" transform="rotate(72)"/>
+            <path d="M0 -8 C-14 -16 -16 -38 -4 -44 L0 -36 L4 -44 C16 -38 14 -16 0 -8 Z" transform="rotate(144)"/>
+            <path d="M0 -8 C-14 -16 -16 -38 -4 -44 L0 -36 L4 -44 C16 -38 14 -16 0 -8 Z" transform="rotate(216)"/>
+            <path d="M0 -8 C-14 -16 -16 -38 -4 -44 L0 -36 L4 -44 C16 -38 14 -16 0 -8 Z" transform="rotate(288)"/>
+            <circle cx="0" cy="0" r="7" fill="#fff"/>
+          </g>
+        </svg>`
+      },
+      {
+        name: "聖誕樹",
+        keywords: ["聖誕樹", "樹", "松樹", "tree", "christmas"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <polygon fill="#000" points="50,8 30,36 40,36 22,58 34,58 14,80 86,80 66,58 78,58 60,36 70,36"/>
+          <rect x="43" y="80" width="14" height="14" fill="#000"/>
+        </svg>`
+      },
+      {
+        name: "大熊貓",
+        keywords: ["熊貓", "貓熊", "熊", "panda", "bear"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <circle cx="24" cy="24" r="13" fill="#000"/>
+          <circle cx="76" cy="24" r="13" fill="#000"/>
+          <circle cx="50" cy="54" r="34" fill="#fff" stroke="#000" stroke-width="6"/>
+          <ellipse cx="36" cy="50" rx="9" ry="12" transform="rotate(-18 36 50)" fill="#000"/>
+          <ellipse cx="64" cy="50" rx="9" ry="12" transform="rotate(18 64 50)" fill="#000"/>
+          <circle cx="37" cy="48" r="3" fill="#fff"/>
+          <circle cx="63" cy="48" r="3" fill="#fff"/>
+          <ellipse cx="50" cy="63" rx="6" ry="4" fill="#000"/>
+          <path d="M41 72 Q50 79 59 72" fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+        </svg>`
+      },
+      {
+        name: "五角星星",
+        keywords: ["星星", "星", "star"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon fill="#000" points="50,8 62,36 92,38 69,58 76,88 50,72 24,88 31,58 8,38 38,36"/></svg>`
+      },
+      {
+        name: "閃亮皇冠",
+        keywords: ["皇冠", "王冠", "crown", "king", "queen"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="#000" d="M12 78 L8 32 L32 52 L50 22 L68 52 L92 32 L88 78 Z"/><rect x="12" y="82" width="76" height="8" rx="3" fill="#000"/></svg>`
+      },
+      {
+        name: "可愛兔子",
+        keywords: ["兔子", "兔", "rabbit", "bunny"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <ellipse cx="36" cy="26" rx="8" ry="22" transform="rotate(-10 36 26)" fill="#000"/>
+          <ellipse cx="64" cy="26" rx="8" ry="22" transform="rotate(10 64 26)" fill="#000"/>
+          <circle cx="50" cy="62" r="28" fill="#000"/>
+          <circle cx="40" cy="58" r="4" fill="#fff"/>
+          <circle cx="60" cy="58" r="4" fill="#fff"/>
+          <ellipse cx="50" cy="67" rx="4" ry="3" fill="#fff"/>
+        </svg>`
+      },
+      {
+        name: "溫馨房子",
+        keywords: ["房子", "家", "屋子", "house", "home"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="#000" d="M50 12 L8 50 L20 50 L20 88 L42 88 L42 62 L58 62 L58 88 L80 88 L80 50 L92 50 Z"/></svg>`
+      },
+      {
+        name: "台北 101",
+        keywords: ["101", "台北101", "高樓", "大樓", "tower", "skyscraper"],
+        svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <path fill="#000" d="M49 4 L51 4 L52 18 L56 22 L44 22 L48 18 Z
+            M40 24 L60 24 L56 33 L44 33 Z
+            M38 35 L62 35 L58 44 L42 44 Z
+            M37 46 L63 46 L59 55 L41 55 Z
+            M36 57 L64 57 L60 66 L40 66 Z
+            M35 68 L65 68 L61 77 L39 77 Z
+            M30 79 L70 79 L74 94 L26 94 Z"/>
+        </svg>`
+      }
+    ];
+
+    // 常用中文名詞 -> 英文檢索詞對照表（加速線上 Iconify 向量圖庫精準搜尋）
+    const ZH_TO_EN_DICT = {
+      "愛心": "heart", "心": "heart", "心形": "heart",
+      "天使": "angel", "翅膀": "wing", "精靈": "fairy",
+      "台灣": "taiwan", "臺灣": "taiwan", "地圖": "map",
+      "貓": "cat", "貓咪": "cat", "小貓": "cat",
+      "狗": "dog", "狗狗": "dog", "小狗": "dog",
+      "兔子": "rabbit", "兔": "rabbit", "熊": "bear", "熊貓": "panda",
+      "蝴蝶": "butterfly", "蜜蜂": "bee", "鳥": "bird", "貓頭鷹": "owl",
+      "企鵝": "penguin", "魚": "fish", "鯨魚": "whale", "海豚": "dolphin",
+      "章魚": "octopus", "烏龜": "turtle", "恐龍": "dinosaur", "龍": "dragon",
+      "大象": "elephant", "獅子": "lion", "老虎": "tiger", "狐狸": "fox",
+      "馬": "horse", "獨角獸": "unicorn", "羊": "sheep", "牛": "cow", "豬": "pig",
+      "火箭": "rocket", "飛機": "airplane", "汽車": "car", "火車": "train",
+      "帆船": "sailboat", "船": "ship", "腳踏車": "bicycle", "自行車": "bicycle",
+      "城堡": "castle", "房子": "house", "家": "home", "學校": "school",
+      "樹": "tree", "聖誕樹": "pine tree", "花": "flower", "櫻花": "flower",
+      "玫瑰": "rose", "向日葵": "sunflower", "葉子": "leaf", "仙人掌": "cactus",
+      "太陽": "sun", "月亮": "moon", "星星": "star", "雲": "cloud", "彩虹": "rainbow",
+      "雪人": "snowman", "雪花": "snowflake", "雨傘": "umbrella", "閃電": "lightning",
+      "蘋果": "apple", "草莓": "strawberry", "鳳梨": "pineapple", "西瓜": "watermelon",
+      "香蕉": "banana", "蛋糕": "cake", "咖啡": "coffee", "珍珠奶茶": "boba",
+      "書": "book", "鉛筆": "pencil", "音樂": "music", "音符": "music note",
+      "鋼琴": "piano", "吉他": "guitar", "相機": "camera", "眼鏡": "glasses",
+      "皇冠": "crown", "鑽石": "diamond", "禮物": "gift", "氣球": "balloon",
+      "幽靈": "ghost", "鬼": "ghost", "南瓜": "pumpkin", "巫師": "wizard",
+      "機器人": "robot", "外星人": "alien", "太空人": "astronaut", "地球": "earth", "飛碟": "ufo", "幽浮": "ufo",
+      "劍": "sword", "盾": "shield", "燈籠": "lantern", "笑臉": "smile",
+      "山": "mountain", "富士山": "mountain", "海": "wave", "船錨": "anchor",
+      "足球": "soccer", "籃球": "basketball", "棒球": "baseball", "羽球": "badminton",
+      "101": "skyscraper", "台北101": "skyscraper", "高樓": "building"
+    };
+
+    const kwImportState = {
+      keyword: "台灣",
+      candidates: [], // [{ id, title, source: 'local'|'web', svgUrl, svgText }]
+      selectedIdx: -1,
+      image: null,
+      grid: [],
+      cols: 25,
+      rows: 25
+    };
+
+    function ensureSvgExplicitSize(svgText) {
+      let cleaned = svgText.replace(/currentColor/gi, "#000000");
+      // 確保 <svg> 具備明確的 width / height 屬性，避免部分瀏覽器畫到 Canvas 時出現 0×0 失敗
+      const tagMatch = cleaned.match(/<svg\b[^>]*>/i);
+      if (tagMatch) {
+        let openTag = tagMatch[0];
+        let vbW = 100, vbH = 100;
+        const vbMatch = openTag.match(/viewBox=["']([^"']+)["']/i);
+        if (vbMatch) {
+          const parts = vbMatch[1].trim().split(/[\s,]+/).map(Number);
+          if (parts.length === 4 && parts[2] > 0 && parts[3] > 0) {
+            vbW = parts[2];
+            vbH = parts[3];
+          }
+        }
+        const scale = 256 / Math.max(vbW, vbH);
+        const outW = Math.max(16, Math.round(vbW * scale));
+        const outH = Math.max(16, Math.round(vbH * scale));
+
+        if (!/\bwidth=/i.test(openTag)) {
+          openTag = openTag.replace(/<svg\b/i, `<svg width="${outW}"`);
+        }
+        if (!/\bheight=/i.test(openTag)) {
+          openTag = openTag.replace(/<svg\b/i, `<svg height="${outH}"`);
+        }
+        cleaned = cleaned.replace(tagMatch[0], openTag);
+      }
+      return cleaned;
+    }
+
+    function svgTextToDataUrl(svgText) {
+      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(ensureSvgExplicitSize(svgText));
+    }
+
+    async function fetchJsonWithMirror(pathAndQuery, timeoutMs = 4500) {
+      const hosts = ["https://api.iconify.design", "https://api.simplesvg.com", "https://api.unisvg.com"];
+      for (const host of hosts) {
+        try {
+          const controller = new AbortController();
+          const tid = setTimeout(() => controller.abort(), timeoutMs);
+          const resp = await fetch(host + pathAndQuery, { signal: controller.signal });
+          clearTimeout(tid);
+          if (resp.ok) return await resp.json();
+        } catch (e) {
+          // 嘗試下一個官方鏡像主機
+        }
+      }
+      return null;
+    }
+
+    async function translateChineseKeywordToEnglish(rawKw) {
+      const trimmed = rawKw.trim();
+      if (!trimmed) return "";
+      if (/^[a-zA-Z0-9\s\-_]+$/.test(trimmed)) return trimmed;
+      if (ZH_TO_EN_DICT[trimmed]) return ZH_TO_EN_DICT[trimmed];
+      for (const [zh, en] of Object.entries(ZH_TO_EN_DICT)) {
+        if (trimmed.includes(zh)) return en;
+      }
+      try {
+        const controller = new AbortController();
+        const tid = setTimeout(() => controller.abort(), 2500);
+        const resp = await fetch(
+          `https://api.mymemory.translated.net/get?q=${encodeURIComponent(trimmed)}&langpair=zh-TW|en`,
+          { signal: controller.signal }
+        );
+        clearTimeout(tid);
+        if (resp.ok) {
+          const data = await resp.json();
+          const translated = data?.responseData?.translatedText || "";
+          if (translated && /^[a-zA-Z0-9\s\-']+$/.test(translated.trim())) {
+            return translated.trim().toLowerCase().replace(/^the\s+|^a\s+|^an\s+/i, "");
+          }
+        }
+      } catch (e) {}
+      return trimmed;
+    }
+
+    async function searchKeywordDrawings() {
+      const rawKw = document.getElementById("kw-search-input").value.trim();
+      if (!rawKw) {
+        showToast("⚠️ 請先輸入想要繪製的名詞（例如：愛心、天使、台灣）");
+        return;
+      }
+      kwImportState.keyword = rawKw;
+      kwImportState.candidates = [];
+      kwImportState.selectedIdx = -1;
+      kwImportState.image = null;
+      document.getElementById("btn-kw-apply").disabled = true;
+
+      const statusEl = document.getElementById("kw-status-line");
+      const galleryEl = document.getElementById("kw-gallery");
+      galleryEl.innerHTML = "";
+      statusEl.innerHTML = `<span>🔍 正在為「<strong>${rawKw}</strong>」搜尋內建與線上向量圖檔...</span>`;
+
+      // 1. 搜尋內建離線向量圖庫
+      const lowerKw = rawKw.toLowerCase();
+      LOCAL_VECTOR_LIBRARY.forEach((item, idx) => {
+        const matched = item.keywords.some(k => lowerKw.includes(k) || k.includes(lowerKw));
+        if (matched) {
+          const normalized = ensureSvgExplicitSize(item.svg);
+          kwImportState.candidates.push({
+            id: `local_${idx}`,
+            title: item.name,
+            source: "local",
+            svgText: normalized,
+            previewUrl: svgTextToDataUrl(normalized)
+          });
+        }
+      });
+
+      renderKeywordGallery();
+      if (kwImportState.candidates.length > 0) {
+        selectKeywordCandidate(0);
+      }
+
+      // 2. 線上搜尋 Iconify 向量圖庫：改採「批次 JSON API」一次取回 SVG 路徑資料，
+      //    完全避免同時請求數十張 .svg 被限流或 CORS 破圖的問題！
+      try {
+        const enQuery = await translateChineseKeywordToEnglish(rawKw);
+        const searchData = await fetchJsonWithMirror(`/search?query=${encodeURIComponent(enQuery)}&limit=24`, 5000);
+        const icons = Array.isArray(searchData?.icons) ? searchData.icons.slice(0, 24) : [];
+
+        // 依圖庫前綴 (prefix) 分組，合併批次查詢
+        const grouped = new Map();
+        for (const iconId of icons) {
+          const colonIdx = iconId.indexOf(":");
+          if (colonIdx <= 0) continue;
+          const prefix = iconId.slice(0, colonIdx);
+          const name = iconId.slice(colonIdx + 1);
+          if (!grouped.has(prefix)) grouped.set(prefix, []);
+          grouped.get(prefix).push(name);
+        }
+
+        const batchPromises = Array.from(grouped.entries()).map(async ([prefix, names]) => {
+          const json = await fetchJsonWithMirror(
+            `/${encodeURIComponent(prefix)}.json?icons=${encodeURIComponent(names.join(","))}`,
+            5000
+          );
+          if (!json || !json.icons) return [];
+
+          const defaultW = json.width || 24;
+          const defaultH = json.height || 24;
+          const built = [];
+
+          for (const name of names) {
+            let iconObj = json.icons[name];
+            if (!iconObj && json.aliases && json.aliases[name]) {
+              const parentName = json.aliases[name].parent;
+              if (parentName && json.icons[parentName]) iconObj = json.icons[parentName];
+            }
+            if (!iconObj || !iconObj.body) continue;
+
+            const left = iconObj.left || 0;
+            const top = iconObj.top || 0;
+            const w = iconObj.width || defaultW;
+            const h = iconObj.height || defaultH;
+            const scale = 256 / Math.max(w, h);
+            const outW = Math.max(16, Math.round(w * scale));
+            const outH = Math.max(16, Math.round(h * scale));
+
+            const rawSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${outW}" height="${outH}" viewBox="${left} ${top} ${w} ${h}">${iconObj.body}</svg>`;
+            const normalized = ensureSvgExplicitSize(rawSvg);
+            built.push({
+              id: `web_${prefix}_${name}`,
+              title: name.replace(/[-_]/g, " "),
+              source: "web",
+              svgText: normalized,
+              previewUrl: svgTextToDataUrl(normalized)
+            });
+          }
+          return built;
+        });
+
+        const batches = await Promise.all(batchPromises);
+        for (const list of batches) {
+          for (const item of list) kwImportState.candidates.push(item);
+        }
+      } catch (e) {
+        // 離線或受限環境下靜默保留內建圖庫結果
+      }
+
+      renderKeywordGallery();
+      if (kwImportState.candidates.length === 0) {
+        statusEl.innerHTML = `<span style="color:#dc2626;">⚠️ 找不到「${rawKw}」的圖檔，請嘗試改用較常見的名詞或英文關鍵字（如 cat、heart、angel、ufo）。</span>`;
+        return;
+      }
+
+      const localCnt = kwImportState.candidates.filter(c => c.source === "local").length;
+      const webCnt = kwImportState.candidates.length - localCnt;
+      statusEl.innerHTML =
+        `<span>✅ 共找到 <strong>${kwImportState.candidates.length}</strong> 張「${rawKw}」候選圖檔（內建 ${localCnt} 張、線上向量 ${webCnt} 張），點選下方圖示即可即時預覽！</span>`;
+
+      if (kwImportState.selectedIdx === -1) {
+        selectKeywordCandidate(0);
+      }
+    }
+
+    function renderKeywordGallery() {
+      const galleryEl = document.getElementById("kw-gallery");
+      galleryEl.innerHTML = "";
+      kwImportState.candidates.forEach((item, idx) => {
+        const div = document.createElement("div");
+        div.className = "kw-item" + (idx === kwImportState.selectedIdx ? " selected" : "");
+        div.title = item.title;
+
+        const img = document.createElement("img");
+        img.src = item.previewUrl;
+        img.alt = item.title;
+
+        const badge = document.createElement("span");
+        badge.className = item.source === "local" ? "kw-badge-local" : "kw-badge-web";
+        badge.textContent = item.source === "local" ? "內建" : "線上";
+
+        const label = document.createElement("span");
+        label.textContent = item.title;
+
+        div.appendChild(img);
+        div.appendChild(badge);
+        div.appendChild(label);
+        div.addEventListener("click", () => selectKeywordCandidate(idx));
+        galleryEl.appendChild(div);
+      });
+    }
+
+    function selectKeywordCandidate(idx) {
+      const item = kwImportState.candidates[idx];
+      if (!item || !item.svgText) return;
+      kwImportState.selectedIdx = idx;
+      renderKeywordGallery();
+
+      document.getElementById("kw-orig-label").textContent = `選取圖檔：${item.title}`;
+
+      const dataUrl = item.previewUrl || svgTextToDataUrl(item.svgText);
+      const img = new Image();
+      img.onload = () => {
+        const natW = img.naturalWidth || img.width || 256;
+        const natH = img.naturalHeight || img.height || 256;
+        kwImportState.image = img;
+        kwImportState.naturalWidth = natW;
+        kwImportState.naturalHeight = natH;
+        document.getElementById("btn-kw-apply").disabled = false;
+
+        if (document.getElementById("kw-lock-ratio").checked) {
+          const maxDim = parseInt(document.getElementById("kw-max-dim").value, 10) || 25;
+          const autoSize = computeAutoBoardSize(natW, natH, maxDim);
+          document.getElementById("kw-cols").value = autoSize.cols;
+          document.getElementById("kw-rows").value = autoSize.rows;
+        }
+
+        const sample = document.createElement("canvas");
+        sample.width = 64;
+        sample.height = 64;
+        const sCtx = sample.getContext("2d");
+        sCtx.fillStyle = "#ffffff";
+        sCtx.fillRect(0, 0, 64, 64);
+        const sc = Math.min(56 / natW, 56 / natH);
+        const sw = natW * sc, sh = natH * sc;
+        sCtx.drawImage(img, (64 - sw) / 2, (64 - sh) / 2, sw, sh);
+        const data = sCtx.getImageData(0, 0, 64, 64).data;
+        const grays = [];
+        for (let i = 0; i < data.length; i += 4) {
+          grays.push(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
+        }
+        const smartT = Math.max(120, Math.min(220, computeOtsuThreshold(grays)));
+        document.getElementById("kw-threshold").value = smartT;
+        document.getElementById("kw-threshold-val").textContent = smartT;
+        document.getElementById("kw-invert").checked = false;
+
+        updateKeywordToNonogramPreview();
+      };
+      img.onerror = () => {
+        showToast("❌ 此向量圖檔格式特殊無法轉換，請改選其他候選圖示");
+      };
+      img.src = dataUrl;
+    }
+
+    function updateKeywordToNonogramPreview() {
+      if (!kwImportState.image) return;
+
+      const cols = Math.max(4, Math.min(100, parseInt(document.getElementById("kw-cols").value, 10) || 25));
+      const rows = Math.max(4, Math.min(100, parseInt(document.getElementById("kw-rows").value, 10) || 25));
+      kwImportState.cols = cols;
+      kwImportState.rows = rows;
+
+      const threshold = parseInt(document.getElementById("kw-threshold").value, 10) || 150;
+      const paddingCells = parseInt(document.getElementById("kw-padding").value, 10) || 0;
+      const invert = document.getElementById("kw-invert").checked;
+      document.getElementById("kw-threshold-val").textContent = threshold;
+
+      const img = kwImportState.image;
+      const imgW = img.naturalWidth || 256;
+      const imgH = img.naturalHeight || 256;
+
+      // 左側：顯示原圖預覽
+      const origCanvas = document.getElementById("kw-orig-preview");
+      origCanvas.width = 240;
+      origCanvas.height = 240;
+      const oCtx = origCanvas.getContext("2d");
+      oCtx.fillStyle = "#ffffff";
+      oCtx.fillRect(0, 0, 240, 240);
+      const pScale = Math.min(210 / imgW, 210 / imgH);
+      const pw = imgW * pScale;
+      const ph = imgH * pScale;
+      oCtx.drawImage(img, (240 - pw) / 2, (240 - ph) / 2, pw, ph);
+
+      // 右側：4x 超採樣轉換為 cols×rows 數織矩陣
+      const safePad = Math.min(paddingCells, Math.floor((Math.min(cols, rows) - 2) / 2));
+      const innerW = Math.max(1, cols - safePad * 2);
+      const innerH = Math.max(1, rows - safePad * 2);
+
+      const ss = cols > 50 || rows > 50 ? 2 : 4;
+      const sampleCanvas = document.createElement("canvas");
+      sampleCanvas.width = cols * ss;
+      sampleCanvas.height = rows * ss;
+      const sCtx = sampleCanvas.getContext("2d");
+      sCtx.fillStyle = "#ffffff";
+      sCtx.fillRect(0, 0, sampleCanvas.width, sampleCanvas.height);
+      sCtx.imageSmoothingEnabled = true;
+      sCtx.imageSmoothingQuality = "high";
+
+      const fitScale = Math.min((innerW * ss) / imgW, (innerH * ss) / imgH);
+      const drawW = imgW * fitScale;
+      const drawH = imgH * fitScale;
+      sCtx.drawImage(img, (sampleCanvas.width - drawW) / 2, (sampleCanvas.height - drawH) / 2, drawW, drawH);
+
+      const sData = sCtx.getImageData(0, 0, sampleCanvas.width, sampleCanvas.height).data;
+      const grid = [];
+      let blackCount = 0;
+
+      for (let r = 0; r < rows; r++) {
+        const rowArr = [];
+        for (let c = 0; c < cols; c++) {
+          let lumSum = 0;
+          for (let dy = 0; dy < ss; dy++) {
+            for (let dx = 0; dx < ss; dx++) {
+              const px = c * ss + dx;
+              const py = r * ss + dy;
+              const idx = (py * sampleCanvas.width + px) * 4;
+              lumSum += 0.299 * sData[idx] + 0.587 * sData[idx + 1] + 0.114 * sData[idx + 2];
+            }
+          }
+          const avgLum = lumSum / (ss * ss);
+          let isBlack = avgLum < threshold;
+          if (invert) isBlack = !isBlack;
+          rowArr.push(isBlack ? 1 : 0);
+          if (isBlack) blackCount++;
+        }
+        grid.push(rowArr);
+      }
+
+      kwImportState.grid = grid;
+      drawGridToCanvas(document.getElementById("kw-pixel-preview"), grid, "#1e293b", null, 240);
+
+      const pct = Math.round((blackCount / (rows * cols)) * 100);
+      document.getElementById("kw-result-label").textContent = `數織題目預覽（${cols}×${rows}）`;
+      document.getElementById("kw-fill-stat").textContent = `塗黑率：${pct}%`;
+      document.getElementById("btn-kw-apply").disabled = blackCount === 0;
+    }
+
     /* ==========================================================================
-       10. 慶祝彩色紙花特效 & 列印自動縮放適配
+       11. 慶祝紙花、列印自動適配與剪貼簿複製
        ========================================================================== */
     function launchConfetti() {
       const canvas = document.getElementById("confetti-canvas");
@@ -2493,24 +4736,19 @@
           ctx.restore();
         });
         frame++;
-        if (active && frame < 240) {
-          requestAnimationFrame(animate);
-        } else {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
+        if (active && frame < 240) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
       requestAnimationFrame(animate);
     }
 
-    // 列印前依格子數量自動調整格寬，避免超出單頁或與頁尾擠壓
     window.addEventListener("beforeprint", () => {
       state.savedCellSizeBeforePrint = getComputedStyle(document.documentElement)
-        .getPropertyValue("--cell-size")
-        .trim();
+        .getPropertyValue("--cell-size").trim();
       const cols = state.mode === "play" ? state.currentPuzzle.cols : state.createCols;
       const rows = state.mode === "play" ? state.currentPuzzle.rows : state.createRows;
       const maxDim = Math.max(cols, rows);
-      const printPx = Math.max(16, Math.min(34, Math.floor(540 / (maxDim + 3))));
+      const printPx = Math.max(5, Math.min(34, Math.floor(540 / (maxDim + 4))));
       document.documentElement.style.setProperty("--cell-size", `${printPx}px`);
     });
 
@@ -2521,17 +4759,12 @@
       }
     });
 
-    /* ==========================================================================
-       11. 剪貼簿複製（現代 API + 舊版相容回退）
-       ========================================================================== */
     async function copyTextToClipboard(text) {
       if (navigator.clipboard && window.isSecureContext) {
         try {
           await navigator.clipboard.writeText(text);
           return true;
-        } catch (err) {
-          // 繼續嘗試回退方案
-        }
+        } catch (err) {}
       }
       try {
         const box = document.getElementById("share-code-text");
@@ -2545,7 +4778,7 @@
     }
 
     /* ==========================================================================
-       12. 事件綁定與初始化 (Event Listeners & Boot)
+       12. 事件綁定與初始化
        ========================================================================== */
     let toastTimer = null;
     function showToast(msg) {
@@ -2553,7 +4786,7 @@
       el.textContent = msg;
       el.classList.add("show");
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+      toastTimer = setTimeout(() => el.classList.remove("show"), 3000);
     }
 
     function switchMode(newMode) {
@@ -2579,22 +4812,18 @@
     document.getElementById("tab-play").addEventListener("click", () => switchMode("play"));
     document.getElementById("tab-create").addEventListener("click", () => switchMode("create"));
 
-    // 縮放控制桿
     document.getElementById("zoom-slider").addEventListener("input", e => {
       const pct = parseInt(e.target.value, 10);
       document.getElementById("zoom-val").textContent = `${pct}%`;
-      const newSize = Math.round((32 * pct) / 100);
-      document.documentElement.style.setProperty("--cell-size", `${newSize}px`);
+      document.documentElement.style.setProperty("--cell-size", `${Math.round((32 * pct) / 100)}px`);
     });
 
-    // 音效開關
     document.getElementById("btn-sound").addEventListener("click", e => {
       sound.enabled = !sound.enabled;
       e.target.textContent = sound.enabled ? "🔊 音效開" : "🔇 靜音";
       if (sound.enabled) sound.playFill();
     });
 
-    // 全螢幕切換
     document.getElementById("btn-fullscreen").addEventListener("click", () => {
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(() => {
@@ -2605,7 +4834,6 @@
       }
     });
 
-    // 說明彈窗
     document.getElementById("btn-help").addEventListener("click", () => {
       document.getElementById("modal-help").classList.add("open");
     });
@@ -2613,21 +4841,38 @@
       document.getElementById("modal-help").classList.remove("open");
     });
 
-    // 關卡下拉選單
     document.getElementById("puzzle-select").addEventListener("change", e => {
       const id = e.target.value;
-      const found = [...BUILTIN_PUZZLES, ...state.customPuzzles].find(p => p.id === id);
+      const pool = [...BUILTIN_PUZZLES, ...state.customPuzzles];
+      if (state.tempPlayPuzzle) pool.push(state.tempPlayPuzzle);
+      const found = pool.find(p => p.id === id);
       if (found) startPlayPuzzle(found);
     });
 
     document.getElementById("btn-restart").addEventListener("click", () => {
       if (state.currentPuzzle) {
         startPlayPuzzle(state.currentPuzzle);
-        showToast("↺ 已重置本題進度");
+        showToast("↺ 已重置本題所有進度");
       }
     });
 
-    // 挑戰模式工具列切換
+    // 多解模式：清空棋盤但保留已收集的解
+    document.getElementById("btn-clear-board-keep-found").addEventListener("click", () => {
+      if (!state.currentPuzzle || state.isSolved) return;
+      state.playerGrid = Array.from(
+        { length: state.currentPuzzle.rows },
+        () => Array(state.currentPuzzle.cols).fill(0)
+      );
+      state.manualErrorHighlight = false;
+      state.manualCrossedClues.clear();
+      for (let r = 0; r < state.currentPuzzle.rows; r++) {
+        updateRowCluesDOM(r);
+        for (let c = 0; c < state.currentPuzzle.cols; c++) updateCellDOM(r, c);
+      }
+      for (let c = 0; c < state.currentPuzzle.cols; c++) updateColCluesDOM(c);
+      showToast("🧹 已清空棋盤（保留已收集紀錄），請繼續找出其他解答！");
+    });
+
     document.querySelectorAll("[data-tool]").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll("[data-tool]").forEach(b => b.classList.remove("active"));
@@ -2636,31 +4881,28 @@
       });
     });
 
-    // 即時檢查錯誤開關（使用局部更新）
     document.getElementById("chk-live-error").addEventListener("change", e => {
       state.liveErrorCheck = e.target.checked;
       updateAllErrorHighlights();
     });
 
-    // 手動檢查答案（使用局部更新）
     document.getElementById("btn-check-now").addEventListener("click", () => {
       if (state.isSolved) return;
       const p = state.currentPuzzle;
+      state.manualErrorHighlight = true;
       let errors = 0;
       for (let r = 0; r < p.rows; r++) {
         for (let c = 0; c < p.cols; c++) {
-          const val = state.playerGrid[r][c];
-          const ans = p.grid[r][c];
-          if ((val === 1 && ans === 0) || (val === 2 && ans === 1)) errors++;
+          if (isCellError(r, c, state.playerGrid[r][c])) errors++;
         }
       }
       if (errors === 0) {
-        showToast("✅ 目前填寫的格子完全正確，請繼續加油！");
+        state.manualErrorHighlight = false;
+        showToast("✅ 目前填寫的格子完全符合解答方向，請繼續加油！");
       } else {
-        state.manualErrorHighlight = true;
         sound.playError();
         updateAllErrorHighlights();
-        showToast(`⚠️ 發現 ${errors} 格與預設解答不符，已用紅框標示！`);
+        showToast(`⚠️ 發現 ${errors} 格與目標解答不符，已用紅框標示！`);
       }
     });
 
@@ -2675,10 +4917,95 @@
       window.print();
     });
 
-    // 過關彈窗按鈕
     document.getElementById("btn-victory-close").addEventListener("click", () => {
       document.getElementById("modal-victory").classList.remove("open");
     });
+
+    // 登錄排行榜成績
+    function submitVictoryScore() {
+      if (!state.currentPuzzle || state.scoreSubmittedForCurrentRun) return;
+      const nameInput = document.getElementById("victory-player-name");
+      const playerName = nameInput.value.trim() || "匿名挑戰者";
+      const result = recordLeaderboardScore(state.currentPuzzle, playerName, state.timerSeconds);
+      state.scoreSubmittedForCurrentRun = true;
+
+      const submitBtn = document.getElementById("btn-submit-score");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "✅ 已登錄";
+      document.getElementById("victory-rank-feedback").textContent =
+        `🎉 已登錄「${playerName}」（${formatTime(state.timerSeconds)}），目前在本題排名第 ${result.rank} 名！`;
+      sound.playHint();
+    }
+
+    document.getElementById("btn-submit-score").addEventListener("click", submitVictoryScore);
+    document.getElementById("victory-player-name").addEventListener("keydown", e => {
+      if (e.key === "Enter") submitVictoryScore();
+    });
+
+    document.getElementById("btn-victory-leaderboard").addEventListener("click", () => {
+      document.getElementById("modal-victory").classList.remove("open");
+      openLeaderboardModal();
+    });
+
+    // 排行榜彈窗相關事件
+    document.getElementById("btn-open-leaderboard").addEventListener("click", () => openLeaderboardModal());
+    document.getElementById("btn-lb-close").addEventListener("click", () => {
+      document.getElementById("modal-leaderboard").classList.remove("open");
+    });
+    document.getElementById("lb-puzzle-select").addEventListener("change", e => {
+      renderLeaderboardTable(e.target.value);
+    });
+
+    document.getElementById("btn-toggle-lb-clear").addEventListener("click", () => {
+      const panel = document.getElementById("lb-clear-panel");
+      panel.classList.toggle("open");
+      if (panel.classList.contains("open")) {
+        const pwdEl = document.getElementById("lb-clear-password");
+        pwdEl.value = "";
+        pwdEl.focus();
+      }
+    });
+
+    document.getElementById("btn-cancel-lb-clear").addEventListener("click", () => {
+      document.getElementById("lb-clear-panel").classList.remove("open");
+      document.getElementById("lb-clear-password").value = "";
+    });
+
+    function handleClearLeaderboard(clearAll) {
+      const pwdEl = document.getElementById("lb-clear-password");
+      const pwd = pwdEl.value.trim();
+      if (pwd !== LEADERBOARD_ADMIN_PWD) {
+        sound.playError();
+        showToast("❌ 密碼錯誤，無法清空排行榜！");
+        pwdEl.select();
+        return;
+      }
+
+      const selectedKey = document.getElementById("lb-puzzle-select").value;
+      if (clearAll) {
+        state.leaderboard = {};
+        state.lastRecordedEntryId = null;
+        saveLeaderboardToStorage();
+        populateLeaderboardDropdown(selectedKey);
+        renderLeaderboardTable(document.getElementById("lb-puzzle-select").value);
+        showToast("✅ 密碼驗證成功，已清空全部題目的排行榜成績！");
+      } else {
+        if (state.leaderboard[selectedKey]) {
+          delete state.leaderboard[selectedKey];
+          saveLeaderboardToStorage();
+        }
+        populateLeaderboardDropdown(selectedKey);
+        renderLeaderboardTable(document.getElementById("lb-puzzle-select").value);
+        showToast("✅ 密碼驗證成功，已清空本題排行榜成績！");
+      }
+
+      sound.playErase();
+      pwdEl.value = "";
+      document.getElementById("lb-clear-panel").classList.remove("open");
+    }
+
+    document.getElementById("btn-clear-lb-current").addEventListener("click", () => handleClearLeaderboard(false));
+    document.getElementById("btn-clear-lb-all").addEventListener("click", () => handleClearLeaderboard(true));
     document.getElementById("btn-victory-next").addEventListener("click", () => {
       document.getElementById("modal-victory").classList.remove("open");
       const all = [...BUILTIN_PUZZLES, ...state.customPuzzles];
@@ -2690,7 +5017,7 @@
 
     // 自訂設計模式控制項
     document.getElementById("create-title").addEventListener("input", e => {
-      state.createTitle = e.target.value || "未命名設計";
+      state.createTitle = e.target.value.trim() || "題目自訂";
       document.getElementById("board-title").textContent = `🎨 設計畫布：${state.createTitle}`;
       document.getElementById("print-title").textContent = `數織邏輯推理學習單 － ${state.createTitle}`;
     });
@@ -2698,10 +5025,11 @@
     document.getElementById("btn-resize-grid").addEventListener("click", () => {
       let r = parseInt(document.getElementById("create-rows").value, 10) || 10;
       let c = parseInt(document.getElementById("create-cols").value, 10) || 10;
-      r = Math.max(5, Math.min(25, r));
-      c = Math.max(5, Math.min(25, c));
+      r = Math.max(4, Math.min(100, r));
+      c = Math.max(4, Math.min(100, c));
       document.getElementById("create-rows").value = r;
       document.getElementById("create-cols").value = c;
+      autoAdjustZoomForGrid(r, c);
       initCreatorGrid(r, c, true);
       showToast(`📐 已調整畫布為 ${c}×${r}`);
     });
@@ -2714,18 +5042,44 @@
       });
     });
 
-    document.getElementById("chk-mirror-h").addEventListener("change", e => {
-      state.mirrorH = e.target.checked;
-    });
-    document.getElementById("chk-mirror-v").addEventListener("change", e => {
-      state.mirrorV = e.target.checked;
-    });
+    document.getElementById("chk-mirror-h").addEventListener("change", e => { state.mirrorH = e.target.checked; });
+    document.getElementById("chk-mirror-v").addEventListener("change", e => { state.mirrorV = e.target.checked; });
 
+    document.getElementById("random-density-select").addEventListener("change", e => {
+      const customEl = document.getElementById("random-density-custom");
+      const isCustom = e.target.value === "custom";
+      customEl.style.display = isCustom ? "inline-block" : "none";
+      if (isCustom) customEl.focus();
+    });
     document.getElementById("btn-random-gen").addEventListener("click", generateRandomPattern);
-
     document.getElementById("btn-clear-canvas").addEventListener("click", () => {
       initCreatorGrid(state.createRows, state.createCols, false);
       showToast("🗑️ 已清空設計畫布");
+    });
+
+    // 唯一解檢驗按鈕與彈窗事件
+    document.getElementById("btn-check-unique").addEventListener("click", runUniquenessCheck);
+    document.getElementById("btn-unique-close").addEventListener("click", () => {
+      document.getElementById("modal-uniqueness").classList.remove("open");
+    });
+    document.getElementById("btn-alt-prev").addEventListener("click", () => {
+      if (!state.uniqueCheckResult) return;
+      const n = state.uniqueCheckResult.altSolutions.length;
+      state.altSolIndex = (state.altSolIndex - 1 + n) % n;
+      renderUniquenessComparison();
+    });
+    document.getElementById("btn-alt-next").addEventListener("click", () => {
+      if (!state.uniqueCheckResult) return;
+      const n = state.uniqueCheckResult.altSolutions.length;
+      state.altSolIndex = (state.altSolIndex + 1) % n;
+      renderUniquenessComparison();
+    });
+    document.getElementById("btn-unique-play-multi").addEventListener("click", () => {
+      document.getElementById("modal-uniqueness").classList.remove("open");
+      const puzzle = buildPuzzleFromCreator();
+      switchMode("play");
+      startPlayPuzzle(puzzle);
+      showToast("🔀 已進入多解挑戰模式，試著找出您設計的所有解答！");
     });
 
     document.getElementById("btn-play-custom").addEventListener("click", () => {
@@ -2751,7 +5105,7 @@
       showToast(`💾 已將「${puzzle.title}」儲存至我的題庫！`);
     });
 
-    // 圖片轉數織事件綁定
+    // 圖片轉數織事件
     const imgModal = document.getElementById("modal-image-import");
     const imgFileInput = document.getElementById("img-file-input");
     const imgDropzone = document.getElementById("img-dropzone");
@@ -2760,43 +5114,25 @@
       resetImageImportModal();
       imgModal.classList.add("open");
     });
-
-    document.getElementById("btn-img-close").addEventListener("click", () => {
-      imgModal.classList.remove("open");
-    });
-
-    document.getElementById("btn-img-reselect").addEventListener("click", () => {
-      imgFileInput.click();
-    });
+    document.getElementById("btn-img-close").addEventListener("click", () => imgModal.classList.remove("open"));
+    document.getElementById("btn-img-reselect").addEventListener("click", () => imgFileInput.click());
 
     imgDropzone.addEventListener("click", () => imgFileInput.click());
-    imgDropzone.addEventListener("dragover", e => {
-      e.preventDefault();
-      imgDropzone.classList.add("dragover");
-    });
+    imgDropzone.addEventListener("dragover", e => { e.preventDefault(); imgDropzone.classList.add("dragover"); });
     imgDropzone.addEventListener("dragleave", () => imgDropzone.classList.remove("dragover"));
     imgDropzone.addEventListener("drop", e => {
       e.preventDefault();
       imgDropzone.classList.remove("dragover");
-      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        handleUploadedImageFile(e.dataTransfer.files[0]);
-      }
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) handleUploadedImageFile(e.dataTransfer.files[0]);
     });
-
     imgFileInput.addEventListener("change", e => {
-      if (e.target.files && e.target.files[0]) {
-        handleUploadedImageFile(e.target.files[0]);
-      }
+      if (e.target.files && e.target.files[0]) handleUploadedImageFile(e.target.files[0]);
     });
 
     document.getElementById("img-max-dim").addEventListener("change", () => {
       if (!imgImportState.image) return;
       const maxDim = parseInt(document.getElementById("img-max-dim").value, 10) || 15;
-      const autoSize = computeAutoBoardSize(
-        imgImportState.image.naturalWidth,
-        imgImportState.image.naturalHeight,
-        maxDim
-      );
+      const autoSize = computeAutoBoardSize((imgImportState.naturalWidth || imgImportState.image.naturalWidth || 256), (imgImportState.naturalHeight || imgImportState.image.naturalHeight || 256), maxDim);
       document.getElementById("img-cols").value = autoSize.cols;
       document.getElementById("img-rows").value = autoSize.rows;
       updateImageToNonogramPreview();
@@ -2805,9 +5141,8 @@
     document.getElementById("img-cols").addEventListener("input", () => {
       if (!imgImportState.image) return;
       if (document.getElementById("img-lock-ratio").checked) {
-        const c = Math.max(5, Math.min(25, parseInt(document.getElementById("img-cols").value, 10) || 15));
-        const ratio = imgImportState.image.naturalHeight / imgImportState.image.naturalWidth;
-        const r = Math.max(5, Math.min(25, Math.round(c * ratio)));
+        const c = Math.max(4, Math.min(100, parseInt(document.getElementById("img-cols").value, 10) || 15));
+        const r = Math.max(4, Math.min(100, Math.round(c * ((imgImportState.naturalHeight || imgImportState.image.naturalHeight || 256) / (imgImportState.naturalWidth || imgImportState.image.naturalWidth || 256)))));
         document.getElementById("img-rows").value = r;
       }
       updateImageToNonogramPreview();
@@ -2816,15 +5151,30 @@
     document.getElementById("img-rows").addEventListener("input", () => {
       if (!imgImportState.image) return;
       if (document.getElementById("img-lock-ratio").checked) {
-        const r = Math.max(5, Math.min(25, parseInt(document.getElementById("img-rows").value, 10) || 15));
-        const ratio = imgImportState.image.naturalWidth / imgImportState.image.naturalHeight;
-        const c = Math.max(5, Math.min(25, Math.round(r * ratio)));
+        const r = Math.max(4, Math.min(100, parseInt(document.getElementById("img-rows").value, 10) || 15));
+        const c = Math.max(4, Math.min(100, Math.round(r * ((imgImportState.naturalWidth || imgImportState.image.naturalWidth || 256) / (imgImportState.naturalHeight || imgImportState.image.naturalHeight || 256)))));
         document.getElementById("img-cols").value = c;
       }
       updateImageToNonogramPreview();
     });
 
     document.getElementById("img-threshold").addEventListener("input", updateImageToNonogramPreview);
+    document.getElementById("img-padding").addEventListener("change", updateImageToNonogramPreview);
+    window.addEventListener("paste", e => {
+      if (!imgModal.classList.contains("open")) return;
+      const items = e.clipboardData && e.clipboardData.items;
+      if (!items) return;
+      for (const item of items) {
+        if (item.type && item.type.startsWith("image/")) {
+          const blob = item.getAsFile();
+          if (blob) {
+            handleUploadedImageFile(blob);
+            showToast("📋 已貼上剪貼簿圖片！");
+            break;
+          }
+        }
+      }
+    });
     document.getElementById("img-invert").addEventListener("change", updateImageToNonogramPreview);
 
     document.getElementById("btn-img-apply").addEventListener("click", () => {
@@ -2834,32 +5184,174 @@
       state.createRows = imgImportState.rows;
       state.createGrid = imgImportState.grid.map(row => [...row]);
       state.createTitle = imgImportState.fileName || "圖片數織";
+      resetCreatorUniquenessBadge();
 
       document.getElementById("create-cols").value = state.createCols;
       document.getElementById("create-rows").value = state.createRows;
       document.getElementById("create-title").value = state.createTitle;
       document.getElementById("board-title").textContent = `🎨 設計畫布：${state.createTitle}`;
       document.getElementById("board-subtitle").textContent =
-        `尺寸：${state.createCols} 欄 × ${state.createRows} 列 ｜ 已自動依圖片比例生成，您可用畫筆微調細節。`;
+        `尺寸：${state.createCols} 欄 × ${state.createRows} 列 ｜ 已依圖片比例生成，可微調並按「🔎 檢驗唯一解」。`;
       document.getElementById("print-title").textContent = `數織邏輯推理學習單 － ${state.createTitle}`;
       document.getElementById("print-size-info").textContent = `規格：${state.createCols} × ${state.createRows}`;
 
       imgModal.classList.remove("open");
+      autoAdjustZoomForGrid(state.createRows, state.createCols);
       renderBoard();
       validateCreatorGrid();
       sound.playHint();
       showToast(`🖼️ 已轉換為 ${state.createCols}×${state.createRows} 數織題目！`);
     });
 
+    // 文字／符號轉數織事件
+    const txtModal = document.getElementById("modal-text-import");
+    document.getElementById("btn-open-text-import").addEventListener("click", () => {
+      txtModal.classList.add("open");
+      updateTextToNonogramPreview(true);
+      const inp = document.getElementById("txt-source-input");
+      inp.focus();
+      inp.select();
+    });
+    document.getElementById("btn-txt-close").addEventListener("click", () => {
+      txtModal.classList.remove("open");
+    });
+
+    document.querySelectorAll(".symbol-chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        document.getElementById("txt-source-input").value = chip.dataset.sample;
+        updateTextToNonogramPreview(true);
+      });
+    });
+
+    document.getElementById("txt-source-input").addEventListener("input", () => updateTextToNonogramPreview(true));
+    document.getElementById("txt-font-family").addEventListener("change", () => updateTextToNonogramPreview(true));
+    document.getElementById("txt-bold").addEventListener("change", () => updateTextToNonogramPreview(true));
+    document.getElementById("txt-max-dim").addEventListener("change", () => updateTextToNonogramPreview(true));
+    document.getElementById("txt-auto-ratio").addEventListener("change", () => updateTextToNonogramPreview(true));
+    document.getElementById("txt-cols").addEventListener("input", () => updateTextToNonogramPreview(false));
+    document.getElementById("txt-rows").addEventListener("input", () => updateTextToNonogramPreview(false));
+    document.getElementById("txt-threshold").addEventListener("input", () => updateTextToNonogramPreview(false));
+    document.getElementById("txt-padding").addEventListener("change", () => updateTextToNonogramPreview(false));
+    document.getElementById("txt-invert").addEventListener("change", () => updateTextToNonogramPreview(false));
+
+    document.getElementById("btn-txt-apply").addEventListener("click", () => {
+      if (!txtImportState.grid || txtImportState.grid.length === 0) return;
+
+      state.createCols = txtImportState.cols;
+      state.createRows = txtImportState.rows;
+      state.createGrid = txtImportState.grid.map(row => [...row]);
+      state.createTitle = txtImportState.text ? `字形：${txtImportState.text}` : "題目自訂";
+      resetCreatorUniquenessBadge();
+
+      document.getElementById("create-cols").value = state.createCols;
+      document.getElementById("create-rows").value = state.createRows;
+      document.getElementById("create-title").value = state.createTitle;
+      document.getElementById("board-title").textContent = `🎨 設計畫布：${state.createTitle}`;
+      document.getElementById("board-subtitle").textContent =
+        `尺寸：${state.createCols} 欄 × ${state.createRows} 列 ｜ 已依文字／符號生成，可微調並按「🔎 檢驗唯一解」。`;
+      document.getElementById("print-title").textContent = `數織邏輯推理學習單 － ${state.createTitle}`;
+      document.getElementById("print-size-info").textContent = `規格：${state.createCols} × ${state.createRows}`;
+
+      txtModal.classList.remove("open");
+      autoAdjustZoomForGrid(state.createRows, state.createCols);
+      renderBoard();
+      validateCreatorGrid();
+      sound.playHint();
+      showToast(`🔤 已將「${txtImportState.text}」轉換為 ${state.createCols}×${state.createRows} 數織題目！`);
+    });
+
+    // 名詞協助繪圖事件
+    const kwModal = document.getElementById("modal-keyword-import");
+    document.getElementById("btn-open-keyword-import").addEventListener("click", () => {
+      kwModal.classList.add("open");
+      const inp = document.getElementById("kw-search-input");
+      inp.focus();
+      if (kwImportState.candidates.length === 0) {
+        searchKeywordDrawings();
+      }
+    });
+    document.getElementById("btn-kw-close").addEventListener("click", () => {
+      kwModal.classList.remove("open");
+    });
+    document.getElementById("btn-kw-search").addEventListener("click", searchKeywordDrawings);
+    document.getElementById("kw-search-input").addEventListener("keydown", e => {
+      if (e.key === "Enter") searchKeywordDrawings();
+    });
+
+    document.querySelectorAll(".kw-quick-chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        document.getElementById("kw-search-input").value = chip.dataset.kw;
+        searchKeywordDrawings();
+      });
+    });
+
+    document.getElementById("kw-max-dim").addEventListener("change", () => {
+      if (!kwImportState.image) return;
+      const maxDim = parseInt(document.getElementById("kw-max-dim").value, 10) || 25;
+      const autoSize = computeAutoBoardSize(
+        kwImportState.naturalWidth || kwImportState.image.naturalWidth || 256,
+        kwImportState.naturalHeight || kwImportState.image.naturalHeight || 256,
+        maxDim
+      );
+      document.getElementById("kw-cols").value = autoSize.cols;
+      document.getElementById("kw-rows").value = autoSize.rows;
+      updateKeywordToNonogramPreview();
+    });
+
+    document.getElementById("kw-cols").addEventListener("input", () => {
+      if (!kwImportState.image) return;
+      if (document.getElementById("kw-lock-ratio").checked) {
+        const c = Math.max(4, Math.min(100, parseInt(document.getElementById("kw-cols").value, 10) || 25));
+        const ratio = (kwImportState.naturalHeight || kwImportState.image.naturalHeight || 256) / (kwImportState.naturalWidth || kwImportState.image.naturalWidth || 256);
+        document.getElementById("kw-rows").value = Math.max(4, Math.min(100, Math.round(c * ratio)));
+      }
+      updateKeywordToNonogramPreview();
+    });
+
+    document.getElementById("kw-rows").addEventListener("input", () => {
+      if (!kwImportState.image) return;
+      if (document.getElementById("kw-lock-ratio").checked) {
+        const r = Math.max(4, Math.min(100, parseInt(document.getElementById("kw-rows").value, 10) || 25));
+        const ratio = (kwImportState.naturalWidth || kwImportState.image.naturalWidth || 256) / (kwImportState.naturalHeight || kwImportState.image.naturalHeight || 256);
+        document.getElementById("kw-cols").value = Math.max(4, Math.min(100, Math.round(r * ratio)));
+      }
+      updateKeywordToNonogramPreview();
+    });
+
+    document.getElementById("kw-threshold").addEventListener("input", updateKeywordToNonogramPreview);
+    document.getElementById("kw-padding").addEventListener("change", updateKeywordToNonogramPreview);
+    document.getElementById("kw-invert").addEventListener("change", updateKeywordToNonogramPreview);
+
+    document.getElementById("btn-kw-apply").addEventListener("click", () => {
+      if (!kwImportState.grid || kwImportState.grid.length === 0) return;
+
+      state.createCols = kwImportState.cols;
+      state.createRows = kwImportState.rows;
+      state.createGrid = kwImportState.grid.map(row => [...row]);
+      state.createTitle = kwImportState.keyword ? kwImportState.keyword : "題目自訂";
+      resetCreatorUniquenessBadge();
+
+      document.getElementById("create-cols").value = state.createCols;
+      document.getElementById("create-rows").value = state.createRows;
+      document.getElementById("create-title").value = state.createTitle;
+      document.getElementById("board-title").textContent = `🎨 設計畫布：${state.createTitle}`;
+      document.getElementById("board-subtitle").textContent =
+        `尺寸：${state.createCols} 欄 × ${state.createRows} 列 ｜ 已依「${state.createTitle}」圖檔生成，可用畫筆微調細節。`;
+      document.getElementById("print-title").textContent = `數織邏輯推理學習單 － ${state.createTitle}`;
+      document.getElementById("print-size-info").textContent = `規格：${state.createCols} × ${state.createRows}`;
+
+      kwModal.classList.remove("open");
+      autoAdjustZoomForGrid(state.createRows, state.createCols);
+      renderBoard();
+      validateCreatorGrid();
+      sound.playHint();
+      showToast(`✨ 已將「${state.createTitle}」轉換為 ${state.createCols}×${state.createRows} 數織題目！`);
+    });
+
     // 分享代碼彈窗
     function openShareModal(prefillWithCreator = false) {
       const box = document.getElementById("share-code-text");
-      if (prefillWithCreator) {
-        const puzzle = buildPuzzleFromCreator();
-        box.value = encodePuzzleShareCode(puzzle);
-      } else {
-        box.value = "";
-      }
+      box.value = prefillWithCreator ? encodePuzzleShareCode(buildPuzzleFromCreator()) : "";
       document.getElementById("modal-share").classList.add("open");
     }
 
@@ -2870,11 +5362,7 @@
       }
       openShareModal(true);
     });
-
-    document.getElementById("btn-import-play").addEventListener("click", () => {
-      openShareModal(false);
-    });
-
+    document.getElementById("btn-import-play").addEventListener("click", () => openShareModal(false));
     document.getElementById("btn-share-close").addEventListener("click", () => {
       document.getElementById("modal-share").classList.remove("open");
     });
@@ -2886,11 +5374,7 @@
         return;
       }
       const ok = await copyTextToClipboard(box.value);
-      if (ok) {
-        showToast("📋 已複製分享代碼至剪貼簿！");
-      } else {
-        showToast("⚠️ 自動複製受限，請手動選取並按 Ctrl+C 複製");
-      }
+      showToast(ok ? "📋 已複製分享代碼至剪貼簿！" : "⚠️ 自動複製受限，請手動選取並按 Ctrl+C 複製");
     });
 
     document.getElementById("btn-load-code").addEventListener("click", () => {
@@ -2906,16 +5390,15 @@
       }
     });
 
-    // 按 ESC 關閉已開啟的彈窗
     window.addEventListener("keydown", e => {
       if (e.key === "Escape") {
         document.querySelectorAll(".modal-backdrop.open").forEach(m => m.classList.remove("open"));
       }
     });
 
-    // 啟動應用程式
     window.addEventListener("DOMContentLoaded", () => {
       loadCustomPuzzlesFromStorage();
+      loadLeaderboardFromStorage();
       populatePuzzleDropdown(BUILTIN_PUZZLES[0].id);
       initCreatorGrid(10, 10, false);
 
@@ -2923,12 +5406,10 @@
       const sharedParam = urlParams.get("code");
       if (sharedParam) {
         try {
-          const decoded = decodePuzzleShareCode(sharedParam);
-          startPlayPuzzle(decoded);
+          startPlayPuzzle(decodePuzzleShareCode(sharedParam));
           return;
-        } catch (e) { /* 回退至預設第一關 */ }
+        } catch (e) {}
       }
-
       startPlayPuzzle(BUILTIN_PUZZLES[0]);
     });
   </script>
